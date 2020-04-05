@@ -24,21 +24,24 @@ const Statistics = ({good, neutral, bad}) => {
   if (all !== 0) {
     average = (good - bad) / all
     positive = good / all * 100
+    return(
+      <div>
+        {'good ' + good}
+        <br></br>
+        {'neutral ' + neutral}
+        <br></br>
+        {'bad ' + bad}
+        <br></br>
+        {'all ' + all}
+        <br></br>
+        {'average ' + average}
+        <br></br>
+        {'positive ' + positive + ' %'}
+      </div>
+    )
   }
   return(
-    <div>
-      {'good ' + good}
-      <br></br>
-      {'neutral ' + neutral}
-      <br></br>
-      {'bad ' + bad}
-      <br></br>
-      {'all ' + all}
-      <br></br>
-      {'average ' + average}
-      <br></br>
-      {'positive ' + positive + ' %'}
-    </div>
+    "No feedback given"
   )
 }
 
