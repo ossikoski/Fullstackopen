@@ -42,14 +42,13 @@ const Part = ({part}) => {
 }
 
 const Total = ({course}) => {
-  let sum = 0
-  course.parts.forEach(element => {
-    sum += element.exercises
-  });
+  let sum = course.parts.reduce((accumulator, currentValue) => {
+    return {exercises: accumulator.exercises + currentValue.exercises}
+  })
   return(
     <div>
       <b>
-        total of {sum} exercises
+        total of {sum.exercises} exercises
       </b>
     </div>
   )
