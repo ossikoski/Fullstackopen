@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
+import axios from 'axios'
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes)   // Tämä tila vaihtuu kun klikataan sublit, tätä käsittelee addNote
+const App = () => {
+  const [notes, setNotes] = useState([])            // Tämä tila vaihtuu kun klikataan sublit, tätä käsittelee addNote
   const [newNote, setNewNote] = useState('')        // Tämä tila vaihtuu aina kun lomakkeeseen kirjoitetaan ja tätä käsittelee handleNoteState = "Tila heijastaa syötekentän arvoa"
   // "placeholder"-teksti (nyt tyhjä) ilmestyy aluksi syötekomponenttiin.
   const [showAll, setShowAll] = useState(true)
-  
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+  }, [])
+  console.log('render', notes.length, 'notes')
 
   const addNote = (event) => {         // Event handler form elementille jota kutsutaan kun klikataan submit
     event.preventDefault()             // Prevents submitting a form -> ei päivitä sivua
