@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const CountryData = ({country}) => {
-  console.log('counrty', country, 'languages', country.languages)
   const code = country.alpha3Code.toLowerCase()
   const imgStyle = {
     flex: 1,
@@ -17,7 +16,7 @@ const CountryData = ({country}) => {
         <br></br>
         population {country.population}
       </div>
-      <h2>languages</h2>
+      <h2>Spoken languages</h2>
       <ul>
         {country.languages.map(language =>
           <li key={language.name}>
@@ -31,29 +30,45 @@ const CountryData = ({country}) => {
 }
 
 const Countries = ({countries}) => {
+  const [countryToShow, setCountryToShow] = useState('')
+  
   if (countries.length == 0){
+    if(countryToShow != '')
+      setCountryToShow('')
+    console.log('if', countries)
     return(
       <div>
         Too many matches, specify another filter
       </div>
     )
   }
-  else if (countries[0] == 'no filter'){
-    return(
-      <div></div>
-    )
-  }
   else if (countries.length == 1){
+    if(countryToShow != '')
+      setCountryToShow('')
+    console.log('elseif1')
     return(
       <CountryData country = {countries[0]}/>
     )
   }
+  else if (countryToShow != ''){
+    console.log('elseif2', countryToShow)
+    return(
+      <CountryData country = {countryToShow}/>
+    )
+  }
   else{
+    if(countryToShow != '')
+      setCountryToShow('')
+    console.log('else')
     return(
       <div>
         {countries.map(country =>
           <div key={country.name}>
             {country.name}
+            <button onClick={() => setCountryToShow(country)}>
+              show
+            </button>
+            {console.log('before click', countryToShow)}
           </div>
         )}
       </div>
@@ -72,12 +87,10 @@ const App = () => {
       .then(response => {
         console.log('promise fulfilled')
         console.log(response)
-        if(response.data.length < 10 && response.data.length > 0){
+        if(response.data.length <= 10 && response.data.length > 0){
           console.log('datapoint')
           setCountries(response.data)
         }
-        else if(response.data.length == 250)
-          setCountries(['no filter'])
         else
           setCountries([])
         console.log(countries)
@@ -86,7 +99,11 @@ const App = () => {
   console.log('render', countries.length, 'countries: ', countries)
 
   const handleFilterChange = (event) => {
-    setFilter('/name/' + event.target.value)
+    console.log('targetvalue', event.target.value)
+    if(event.target.value == "")
+      setFilter('/all')
+    else
+      setFilter('/name/' + event.target.value)
     console.log(filter)
   }
 
