@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const api_key = process.env.REACT_APP_API_KEY
+
 const CountryData = ({country}) => {
+  const preWeather = {
+    current: {
+    }
+  }
+  const [weather, setWeather] = useState(preWeather)
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${country.capital}`)
+      .then(response => {
+        console.log('promise fulfilled')
+        console.log(response.data)
+        setWeather(response.data)
+      })
+  }, [])
+
   const code = country.alpha3Code.toLowerCase()
   const imgStyle = {
-    flex: 1,
-    height: 100,
-    resizeMode: 'contain' 
+    flag:{
+      flex: 1,
+      height: 100,
+      resizeMode: 'contain'
+    },
+    weatherIcon:{
+      flex: 1,
+      height: 80,
+      resizeMode: 'contain'
+    }
   }
   return(
     <div>
@@ -24,7 +50,13 @@ const CountryData = ({country}) => {
           </li>
         )}
       </ul>
-      <img src={`https://restcountries.eu/data/${code}.svg`} style={imgStyle}/>
+      <img src={`https://restcountries.eu/data/${code}.svg`} style={imgStyle.flag}/>
+      <h2>Weather in {country.capital}</h2>
+        <b>temperature:</b> {weather.current.temperature} Celsius
+      <br></br>
+      <img src={weather.current.weather_icons} style={imgStyle.weatherIcon}/>
+      <br></br>
+      <b>wind:</b> {weather.current.wind_speed} mph direction {weather.current.wind_dir}
     </div>
   )
 }
@@ -94,8 +126,6 @@ const App = () => {
         console.log('countries_all', countries_all)
         if(countries_all.length > 0 && countries_all.length < 200){
           for (let country of countries_all){
-            console.log('for looppi', country.name, filtteri)
-
             if(country.name.toLowerCase().includes(filtteri))
               countries_chosen.push(country)
           }
@@ -107,7 +137,6 @@ const App = () => {
         }
         else
           setCountries([])
-        console.log(countries)
       })
   }, [filter])
   console.log('render', countries.length, 'countries: ', countries)
@@ -123,7 +152,7 @@ const App = () => {
 
   return (
     <div>
-      <div>find countries</div>
+      find countries
       <input 
           onChange={handleFilterChange}
         />
