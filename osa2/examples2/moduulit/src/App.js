@@ -8,6 +8,17 @@ const App = () => {
   // "placeholder"-teksti (nyt tyhjä) ilmestyy aluksi syötekomponenttiin.
   const [showAll, setShowAll] = useState(true)
 
+  const toggleImportanceOf = id => {
+    const url = `http://localhost:3001/notes/${id}` // Jokaisella muistiinpanolla id-kenttään perustuva url
+    const note = notes.find(n => n.id === id)       // Etsitään muutettava muistiinpano ja talletetaan muuttujaan note viite siihen
+    const changedNote = { ...note, important: !note.important }  // Luodaan uusi olio, jonka sisältö on sama muuten, mutta important kenttä on päinvastainen
+    // Tärkeää luoda uusi olio, joka on kopio vanhasta notesta, koska notes on tila ja tilaa ei saa muuttaa suoraan.
+  
+    axios.put(url, changedNote).then(response => {  // PUT-pyyntö, jolla lähetetään olio palvelimelle ja korvataan vanha.
+      setNotes(notes.map(note => note.id !== id ? note : response.data)) // Kaikki vanhat muistiinpanot asetetaan notes-muuttujaan, paitsi muutettu, joka on sama kuin palvelimelle lähetetty
+    })    // tulos = ehto ? tulos1 : tulos2 , jos ehto tosi niin tulos = tulos1
+  }       // Eli tässä: Jos kyseessä ei lisätty note, lisätään vanha note. Jos kyseessä on juuri lisätty note, listätään response.data
+
   useEffect(() => {
     console.log('effect')
     axios
@@ -25,11 +36,20 @@ const App = () => {
       content: newNote,                // Sisältö syötekentän tilasta
       date: new Date().toISOString(),
       important: Math.random > 0.5,    // 50% todennäköisyydellä muistiinpano on tärkeä :D
-      id: notes.lenght + 1             // id generoidaan määrän perusteella -> Toimii koska muistiinpanoja ei voi poistaa
+      // id: notes.lenght + 1             // id generoidaan määrän perusteella -> Toimii koska muistiinpanoja ei voi poistaa
+      // id kommentoitu pois -> parempi antaa palvelimen generoida id
     }
 
-    setNotes(notes.concat(noteObject))    // Tilan muuttaminen!
-    setNewNote('')                        // Muuttaa myös syötekentän tilan tyhjäksi
+    axios // uuden noten lisääminen POST metodilla
+      .post('http://localhost:3001/notes', noteObject)
+      .then(response => {
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+      })
+
+    //setNotes(notes.concat(noteObject))    // Tilan muuttaminen!
+    //setNewNote('')                        // Muuttaa myös syötekentän tilan tyhjäksi
+    //Kommentoitu pois nyt kun axios.post lisää noten
   }
 
   const handleNoteChange = (event) => {   // Ei tarvitse preventDefaultia, koska syötekentän muutoksella ei oletusarvoista toimintaa, 
@@ -51,7 +71,10 @@ const App = () => {
       </div>
       <ul>
         {notesToShow.map((note, i) => 
-          <Note key={i} note={note} />
+          <Note key={i} 
+          note={note} 
+          toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         )}
       </ul>
       <form onSubmit={addNote}>
