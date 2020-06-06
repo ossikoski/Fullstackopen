@@ -87,9 +87,23 @@ const App = () => {
       .then(response => {
         console.log('promise fulfilled')
         console.log(response)
-        if(response.data.length <= 10 && response.data.length > 0){
+
+        const countries_all = response.data
+        const countries_chosen = []
+        let filtteri = filter.slice(6, filter.length).toLowerCase()
+        console.log('countries_all', countries_all)
+        if(countries_all.length > 0 && countries_all.length < 200){
+          for (let country of countries_all){
+            console.log('for looppi', country.name, filtteri)
+
+            if(country.name.toLowerCase().includes(filtteri))
+              countries_chosen.push(country)
+          }
+        }
+        console.log('chosen', countries_chosen)
+        if(countries_chosen.length <= 10 && countries_chosen.length > 0){
           console.log('datapoint')
-          setCountries(response.data)
+          setCountries(countries_chosen)
         }
         else
           setCountries([])
@@ -99,7 +113,7 @@ const App = () => {
   console.log('render', countries.length, 'countries: ', countries)
 
   const handleFilterChange = (event) => {
-    console.log('targetvalue', event.target.value)
+    console.log('targetvalue of filter', event.target.value)
     if(event.target.value == "")
       setFilter('/all')
     else
