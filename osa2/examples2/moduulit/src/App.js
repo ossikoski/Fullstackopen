@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
+import noteService from './services/notes'
 import axios from 'axios'
 
 const App = () => {
@@ -8,18 +9,8 @@ const App = () => {
   // "placeholder"-teksti (nyt tyhjä) ilmestyy aluksi syötekomponenttiin.
   const [showAll, setShowAll] = useState(true)
 
-  const toggleImportanceOf = id => {
-    const url = `http://localhost:3001/notes/${id}` // Jokaisella muistiinpanolla id-kenttään perustuva url
-    const note = notes.find(n => n.id === id)       // Etsitään muutettava muistiinpano ja talletetaan muuttujaan note viite siihen
-    const changedNote = { ...note, important: !note.important }  // Luodaan uusi olio, jonka sisältö on sama muuten, mutta important kenttä on päinvastainen
-    // Tärkeää luoda uusi olio, joka on kopio vanhasta notesta, koska notes on tila ja tilaa ei saa muuttaa suoraan.
-  
-    axios.put(url, changedNote).then(response => {  // PUT-pyyntö, jolla lähetetään olio palvelimelle ja korvataan vanha.
-      setNotes(notes.map(note => note.id !== id ? note : response.data)) // Kaikki vanhat muistiinpanot asetetaan notes-muuttujaan, paitsi muutettu, joka on sama kuin palvelimelle lähetetty
-    })    // tulos = ehto ? tulos1 : tulos2 , jos ehto tosi niin tulos = tulos1
-  }       // Eli tässä: Jos kyseessä ei lisätty note, lisätään vanha note. Jos kyseessä on juuri lisätty note, listätään response.data
-
   useEffect(() => {
+    /*
     console.log('effect')
     axios
       .get('http://localhost:3001/notes')
@@ -27,8 +18,37 @@ const App = () => {
         console.log('promise fulfilled')
         setNotes(response.data)
       })
+    */
+    // axios.get on korvattu noteService.getAllilla
+
+    noteService   
+      .getAll()
+        .then(initialNotes => {
+          setNotes(initialNotes)
+        })
   }, [])
   console.log('render', notes.length, 'notes')
+  
+  const toggleImportanceOf = id => {
+    const url = `http://localhost:3001/notes/${id}` // Jokaisella muistiinpanolla id-kenttään perustuva url
+    const note = notes.find(n => n.id === id)       // Etsitään muutettava muistiinpano ja talletetaan muuttujaan note viite siihen
+    const changedNote = { ...note, important: !note.important }  // Luodaan uusi olio, jonka sisältö on sama muuten, mutta important kenttä on päinvastainen
+    // Tärkeää luoda uusi olio, joka on kopio vanhasta notesta, koska notes on tila ja tilaa ei saa muuttaa suoraan.
+  
+    /* axios.put korvattu noteService.updatella
+    axios.put(url, changedNote).then(response => {  // PUT-pyyntö, jolla lähetetään olio palvelimelle ja korvataan vanha.
+      setNotes(notes.map(note => note.id !== id ? note : response.data)) // Kaikki vanhat muistiinpanot asetetaan notes-muuttujaan, paitsi muutettu, joka on sama kuin palvelimelle lähetetty
+    })    // tulos = ehto ? tulos1 : tulos2 , jos ehto tosi niin tulos = tulos1
+          // Eli tässä: Jos kyseessä ei lisätty note, lisätään vanha note. Jos kyseessä on juuri lisätty note, listätään response.data
+    */    //^kommentti pätee alemmas
+
+    noteService
+    .update(id, changedNote)
+      .then(response => {
+        setNotes(notes.map(note => note.id !== id ? note : response.data))
+    })
+  }
+  
 
   const addNote = (event) => {         // Event handler form elementille jota kutsutaan kun klikataan submit
     event.preventDefault()             // Prevents submitting a form -> ei päivitä sivua
@@ -40,16 +60,25 @@ const App = () => {
       // id kommentoitu pois -> parempi antaa palvelimen generoida id
     }
 
+    /* axios.post korvattu noteService.creatella
     axios // uuden noten lisääminen POST metodilla
       .post('http://localhost:3001/notes', noteObject)
       .then(response => {
         setNotes(notes.concat(response.data))
         setNewNote('')
       })
-
+    */
     //setNotes(notes.concat(noteObject))    // Tilan muuttaminen!
     //setNewNote('')                        // Muuttaa myös syötekentän tilan tyhjäksi
     //Kommentoitu pois nyt kun axios.post lisää noten
+
+    noteService
+    .create(noteObject)
+      .then(response => {
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+    })
+
   }
 
   const handleNoteChange = (event) => {   // Ei tarvitse preventDefaultia, koska syötekentän muutoksella ei oletusarvoista toimintaa, 
