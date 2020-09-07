@@ -3,23 +3,22 @@ import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Persons from './components/Persons.js'
 
-import axios from 'axios'
+import personService from './services/personService.js'
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter ] = useState('')
-  const personsToShow = persons.map(person => ({name: person.name.toLowerCase(), number: person.number})).filter(person => person.name.includes(filter))
+  const personsToShow = persons.map(person => ({name: person.name, number: person.number})).filter(person => person.name.toLowerCase().includes(filter))
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled, data:', response.data)
-        setPersons(response.data)
-      })
+    personService   
+      .getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })
   }, [])
   console.log('render', persons.length, 'persons')
 
@@ -30,15 +29,16 @@ const App = () => {
       number: newNumber
     }
 
-    const personsArray = persons.map(person => person.name)
-    console.log(personsArray.includes(newName))
-    if(personsArray.includes(newName))
+    const personNamesArray = persons.map(person => person.name)
+    console.log(personNamesArray.includes(newName))
+
+    if(personNamesArray.includes(newName))
       alert(`${newName} is already added to phonebook`)
     else{
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService
+        .create(personObject)
+          .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
