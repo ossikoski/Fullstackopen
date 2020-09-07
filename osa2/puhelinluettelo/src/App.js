@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
-import Persons from './components/Persons.js'
+import Person from './components/Person.js'
 
 import personService from './services/personService.js'
 
@@ -10,17 +10,20 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter ] = useState('')
-  const personsToShow = persons.map(person => ({name: person.name, number: person.number})).filter(person => person.name.toLowerCase().includes(filter))
+  
+  const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter))
+  console.log("personstoshow", personsToShow)
 
   useEffect(() => {
     console.log('effect')
     personService   
       .getAll()
         .then(initialPersons => {
+          console.log("initialpersons", initialPersons)
           setPersons(initialPersons)
         })
   }, [])
-  console.log('render', persons.length, 'persons')
+  console.log("persons after render", persons)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -38,11 +41,29 @@ const App = () => {
       personService
         .create(personObject)
           .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
-          setNewName('')
-          setNewNumber('')
+            console.log("returnedPerson:", returnedPerson)
+            setPersons(persons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
         })
     }
+  }
+
+  const deletePersonOf = id => {
+    console.log("ID", id)
+    const person = persons.find(p => p.id === id) 
+
+    const result = window.confirm(`Delete ${person.name} ?`)
+
+    if(result){
+      console.log("DELETING")
+      personService
+      .deleting(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
+    }
+    console.log("DELETED")
   }
 
   const handleNameChange = (event) => {
@@ -69,7 +90,13 @@ const App = () => {
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
 
       <h3>Numbers</h3>
-      <Persons personsToShow={personsToShow}/>
+
+      {personsToShow.map((person, i) =>
+        <Person key = {i}
+        person = {person}
+        deletePerson={()=>deletePersonOf(person.id)}
+        />
+      )}
     </div>
   )
 
