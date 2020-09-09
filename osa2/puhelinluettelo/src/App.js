@@ -33,10 +33,26 @@ const App = () => {
     }
 
     const personNamesArray = persons.map(person => person.name)
-    console.log(personNamesArray.includes(newName))
+    console.log("Does include", personNamesArray.includes(newName))
+    let replace_result = true
 
-    if(personNamesArray.includes(newName))
-      alert(`${newName} is already added to phonebook`)
+    if(personNamesArray.includes(newName)){
+      replace_result = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if(replace_result){
+        let id = 0
+        for(let person of persons){
+          if(person.name == newName){
+            id = person.id
+          }
+        }
+        personService
+        .update(id, personObject)
+          .then(returnedPerson => {
+            console.log("UPDATE", returnedPerson)
+            setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+          })
+      }
+    }
     else{
       personService
         .create(personObject)
@@ -53,9 +69,9 @@ const App = () => {
     console.log("ID", id)
     const person = persons.find(p => p.id === id) 
 
-    const result = window.confirm(`Delete ${person.name} ?`)
+    const delete_result = window.confirm(`Delete ${person.name} ?`)
 
-    if(result){
+    if(delete_result){
       console.log("DELETING")
       personService
       .deleting(id)
