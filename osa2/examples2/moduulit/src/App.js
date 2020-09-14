@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
 import noteService from './services/notes'
-import axios from 'axios'
+import Notification from './components/Notification'
 
 const App = () => {
   const [notes, setNotes] = useState([])            // Tämä tila vaihtuu kun klikataan sublit, tätä käsittelee addNote
   const [newNote, setNewNote] = useState('')        // Tämä tila vaihtuu aina kun lomakkeeseen kirjoitetaan ja tätä käsittelee handleNoteState = "Tila heijastaa syötekentän arvoa"
   // "placeholder"-teksti (nyt tyhjä) ilmestyy aluksi syötekomponenttiin.
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
 
   useEffect(() => {
     /*
@@ -48,9 +49,12 @@ const App = () => {
         setNotes(notes.map(note => note.id !== id ? note : response.data))
     })
     .catch(error => {
-      alert(
-        `the note '${note.content}' was already deleted from server`
+      setErrorMessage(
+        `Note '${note.content}' was already removed from server`
       )
+      setTimeout(() => {  // Viiden sekunnin kuluttua errorMessage nulliksi
+        setErrorMessage(null)
+      }, 5000)
       setNotes(notes.filter(n => n.id !== id))
     })
   }
@@ -99,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
