@@ -5,6 +5,18 @@ const app = express()   //luodaan muuttujaan app sijoitettava express-sovellusta
 app.use(express.json()) // Auttaa POST-pyynnön bodyssa olevan muistiinpanon JSON-muotoisten tietojen parseamisessa
 //  json-parserin toimintaperiaatteena on, että se ottaa pyynnön mukana olevan JSON-muotoisen datan, 
 // muuttaa sen Javascript-olioksi ja sijoittaa request-olion kenttään body ennen kuin routen käsittelijää kutsutaan.
+
+// Middleware funktio
+const requestLogger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+  }
+
+app.use(requestLogger)
+
 let notes = [
     {
       id: 1,
@@ -100,6 +112,13 @@ app.get('/', (req, res) => {                // ensimmäinen määrittelee tapaht
   
     response.json(note)
   })
+
+// saadaan routejen käsittelemättömistä virhetilanteista JSON-muotoinen virheilmoitus
+const unknownEndpoint = (request, response) => {
+response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3001   // sitoo muuttujaan app sijoitetun http-palvelimen kuuntelemaan porttiin 3001 tulevia HTTP-pyyntöjä:
 app.listen(PORT, () => {
