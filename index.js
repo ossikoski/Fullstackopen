@@ -69,6 +69,13 @@ app.post('/api/persons', (request, response) => {
           error: 'name or number missing' 
         })
     }
+    for(let person of persons){
+        if(body.name == person.name){
+            return response.status(400).json({ 
+                error: 'name must be unique' 
+              })
+        }
+    }
     const person = {
         id: generateId(),
         name: body.name,
