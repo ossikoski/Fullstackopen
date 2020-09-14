@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter.js'
 import PersonForm from './components/PersonForm.js'
 import Person from './components/Person.js'
+import Notification from './components/Notification.js'
 
 import personService from './services/personService.js'
 
@@ -10,6 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notificationMessage, setNotificationMessage ] = useState(null)
   
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter))
   console.log("personstoshow", personsToShow)
@@ -51,6 +53,12 @@ const App = () => {
             console.log("UPDATE", returnedPerson)
             setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
           })
+        setNotificationMessage(
+          `${newName} number changed to ${newNumber}`
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       }
     }
     else{
@@ -62,6 +70,12 @@ const App = () => {
             setNewName('')
             setNewNumber('')
         })
+      setNotificationMessage(
+        `Added ${newName}`
+      )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
     }
   }
 
@@ -80,6 +94,13 @@ const App = () => {
         })
     }
     console.log("DELETED")
+    setNotificationMessage(
+      `Deleted ${person.name}`
+    )
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
+    
   }
 
   const handleNameChange = (event) => {
@@ -100,6 +121,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={notificationMessage}/>
+
       <Filter handleFilterChange={handleFilterChange}/>
 
       <h3>add a new</h3>
