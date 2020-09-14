@@ -11,7 +11,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [ filter, setFilter ] = useState('')
-  const [ notificationMessage, setNotificationMessage ] = useState(null)
+  const [ notificationMessage, setNotificationMessage ] = useState([false, null])
   
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter))
   console.log("personstoshow", personsToShow)
@@ -52,13 +52,21 @@ const App = () => {
           .then(returnedPerson => {
             console.log("UPDATE", returnedPerson)
             setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+            setNotificationMessage(
+              [false, `${newName} number changed to ${newNumber}`]
+            )
+            setTimeout(() => {
+              setNotificationMessage([false, null])
+            }, 5000)
           })
-        setNotificationMessage(
-          `${newName} number changed to ${newNumber}`
-        )
-        setTimeout(() => {
-          setNotificationMessage(null)
-        }, 5000)
+        .catch(error => {
+          setNotificationMessage([true, `${newName} has already been deleted from the server`])
+          setPersons(persons.filter(person => person.id !== id))
+          setTimeout(() => {
+            setNotificationMessage([false, null])
+          }, 5000)
+        })
+        
       }
     }
     else{
@@ -70,11 +78,12 @@ const App = () => {
             setNewName('')
             setNewNumber('')
         })
-      setNotificationMessage(
+      setNotificationMessage([
+        false, 
         `Added ${newName}`
-      )
+      ])
       setTimeout(() => {
-        setNotificationMessage(null)
+        setNotificationMessage([false, null])
       }, 5000)
     }
   }
@@ -91,15 +100,24 @@ const App = () => {
       .deleting(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
+          console.log("DELETED")
+          setNotificationMessage([
+            false,
+            `Deleted ${person.name}`
+          ])
+          setTimeout(() => {
+            setNotificationMessage([false, null])
+          }, 5000)
         })
+      .catch(error => {
+        setNotificationMessage([true, `${person.name} has already been deleted from the server`])
+        setPersons(persons.filter(person => person.id !== id))
+        setTimeout(() => {
+          setNotificationMessage([false, null])
+        }, 5000)
+      })
     }
-    console.log("DELETED")
-    setNotificationMessage(
-      `Deleted ${person.name}`
-    )
-    setTimeout(() => {
-      setNotificationMessage(null)
-    }, 5000)
+    
     
   }
 
