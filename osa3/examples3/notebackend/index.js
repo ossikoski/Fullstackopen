@@ -64,8 +64,7 @@ app.get('/', (request, response) => {
   response.json(notes)    // lähettää HTTP-pyynnön vastaukseksi parametrina olevaa Javascript-olioa eli taulukkoa notes vastaavan JSON-muotoisen merkkijonon.
 })                        // Nyt stringify-muutos tapahtuu automaattisesti expressillä
 
-
-app.get('/api/notes/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
+app.get('/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
   const id = Number(request.params.id)
   const note = notes.find(note => note.id === id)
   if (note) {                 
