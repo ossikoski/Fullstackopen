@@ -17,6 +17,12 @@ const requestLogger = (request, response, next) => {
 
 app.use(requestLogger)
 
+
+//sallii kaikista origineista tulevat pyynnöt kaikkiin backendin express routeihin:
+const cors = require('cors')
+
+app.use(cors())
+
 let notes = [
     {
       id: 1,
