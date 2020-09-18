@@ -50,74 +50,74 @@ let notes = [
 //  })
 
 // Seuraavaksi määritellään sovellukselle kaksi routea.
-app.get('/', (req, res) => {                // ensimmäinen määrittelee tapahtumankäsittelijän, 
-    res.send('<h1>Hello World!</h1>')       // joka hoitaa sovelluksen juureen eli polkuun / tulevia HTTP GET -pyyntöjä
-  })
+//app.get('/', (req, res) => {                // ensimmäinen määrittelee tapahtumankäsittelijän, 
+//    res.send('<h1>Hello World!</h1>')       // joka hoitaa sovelluksen juureen eli polkuun / tulevia HTTP GET -pyyntöjä
+//  })
   // Tapahtumankäsittelijäfunktiolla on kaksi parametria. Näistä ensimmäinen eli request sisältää kaikki HTTP-pyynnön tiedot
   // ja toisen parametrin response:n avulla määritellään, miten pyyntöön vastataan. 
   // Palvelin vastaa HTTP-pyyntöön lähettämällä selaimelle vastaukseksi send:in parametrina olevan merkkijonon
   // Koska parametri on merkkijono, asettaa express vastauksessa content-type-headerin arvoksi text/html, statuskoodiksi tulee oletusarvoisesti 200.
   
 
- // Routeista toinen määrittelee tapahtumankäsittelijän, joka hoitaa sovelluksen polkuun /api/notes tulevia HTTP GET -pyyntöjä:
-  app.get('/api/notes', (request, response) => {
-    response.json(notes)    // lähettää HTTP-pyynnön vastaukseksi parametrina olevaa Javascript-olioa eli taulukkoa notes vastaavan JSON-muotoisen merkkijonon.
-  })                        // Nyt stringify-muutos tapahtuu automaattisesti expressillä
-  
+// Routeista toinen määrittelee tapahtumankäsittelijän, joka hoitaa sovelluksen polkuun /api/notes tulevia HTTP GET -pyyntöjä:
+app.get('/', (request, response) => {
+  response.json(notes)    // lähettää HTTP-pyynnön vastaukseksi parametrina olevaa Javascript-olioa eli taulukkoa notes vastaavan JSON-muotoisen merkkijonon.
+})                        // Nyt stringify-muutos tapahtuu automaattisesti expressillä
 
-  app.get('/api/notes/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
-    const id = Number(request.params.id)
-    const note = notes.find(note => note.id === id)
-    if (note) {                 
-        response.json(note)    
-      } 
-    else {
-    response.status(404).end()
-    // Koska vastaukseen ei nyt liity mitään dataa käytetään statuskoodin asettavan metodin status lisäksi metodia end 
-    // ilmoittamaan siitä, että pyyntöön tulee vastata ilman dataa.
-      }
-  })
 
-  // Poisto tapahtuu tekemällä HTTP DELETE -pyyntö resurssin urliin:
-  app.delete('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = notes.filter(note => note.id !== id)
-  
-    response.status(204).end()
-    // Jos poisto onnistuu, eli poistettava muistiinpano on olemassa, vastataan statuskoodilla 204 no content sillä mukaan ei lähetetä mitään dataa.
-  })
+app.get('/api/notes/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
+  const id = Number(request.params.id)
+  const note = notes.find(note => note.id === id)
+  if (note) {                 
+      response.json(note)    
+    } 
+  else {
+  response.status(404).end()
+  // Koska vastaukseen ei nyt liity mitään dataa käytetään statuskoodin asettavan metodin status lisäksi metodia end 
+  // ilmoittamaan siitä, että pyyntöön tulee vastata ilman dataa.
+    }
+})
 
-  const generateId = () => {
-    const maxId = notes.length > 0
-      ? Math.max(...notes.map(n => n.id))
-      : 0
-    return maxId + 1
-  }
+// Poisto tapahtuu tekemällä HTTP DELETE -pyyntö resurssin urliin:
+app.delete('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  notes = notes.filter(note => note.id !== id)
 
-  app.post('/api/notes', (request, response) => {
-    const body = request.body
+  response.status(204).end()
+  // Jos poisto onnistuu, eli poistettava muistiinpano on olemassa, vastataan statuskoodilla 204 no content sillä mukaan ei lähetetä mitään dataa.
+})
 
-    if (!body.content) {
-        return response.status(400).json({ 
-          error: 'content missing' 
-        })
-      }
+const generateId = () => {
+  const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => n.id))
+    : 0
+  return maxId + 1
+}
 
-    //const note = request.body   // Tapahtumankäsittelijäfunktio pääsee dataan käsiksi olion request kentän body avulla.
-    //note.id = maxId + 1
+app.post('/api/notes', (request, response) => {
+  const body = request.body
 
-    const note = {
-        content: body.content,
-        important: body.important || false,
-        // kentän oletusarvo on false (eli jos kenttä important puuttuu)
-        date: new Date(),
-        id: generateId(),
+  if (!body.content) {
+      return response.status(400).json({ 
+        error: 'content missing' 
+      })
     }
 
-    notes = notes.concat(note)
-  
-    response.json(note)
-  })
+  //const note = request.body   // Tapahtumankäsittelijäfunktio pääsee dataan käsiksi olion request kentän body avulla.
+  //note.id = maxId + 1
+
+  const note = {
+      content: body.content,
+      important: body.important || false,
+      // kentän oletusarvo on false (eli jos kenttä important puuttuu)
+      date: new Date(),
+      id: generateId(),
+  }
+
+  notes = notes.concat(note)
+
+  response.json(note)
+})
 
 // saadaan routejen käsittelemättömistä virhetilanteista JSON-muotoinen virheilmoitus
 const unknownEndpoint = (request, response) => {
@@ -126,7 +126,8 @@ response.status(404).send({ error: 'unknown endpoint' })
 
 app.use(unknownEndpoint)
 
-const PORT = 3001   // sitoo muuttujaan app sijoitetun http-palvelimen kuuntelemaan porttiin 3001 tulevia HTTP-pyyntöjä:
+// sitoo muuttujaan app sijoitetun http-palvelimen kuuntelemaan ympäristömuuttujassa PORT määritelty portti tai 3001, jos ympäristömuuttuja PORT ei ole määritelty.
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
