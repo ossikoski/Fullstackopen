@@ -6,6 +6,9 @@ app.use(express.json()) // Auttaa POST-pyynnön bodyssa olevan muistiinpanon JSO
 //  json-parserin toimintaperiaatteena on, että se ottaa pyynnön mukana olevan JSON-muotoisen datan, 
 // muuttaa sen Javascript-olioksi ja sijoittaa request-olion kenttään body ennen kuin routen käsittelijää kutsutaan.
 
+app.use(express.static('build')) 
+//tarkastaa Express GET-tyyppisten HTTP-pyyntöjen yhteydessä ensin löytyykö pyynnön polkua vastaavan nimistä tiedostoa hakemistosta build.
+
 // Middleware funktio
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
@@ -60,11 +63,11 @@ let notes = [
   
 
 // Routeista toinen määrittelee tapahtumankäsittelijän, joka hoitaa sovelluksen polkuun /api/notes tulevia HTTP GET -pyyntöjä:
-app.get('/', (request, response) => {
+app.get('/api/notes', (request, response) => {
   response.json(notes)    // lähettää HTTP-pyynnön vastaukseksi parametrina olevaa Javascript-olioa eli taulukkoa notes vastaavan JSON-muotoisen merkkijonon.
 })                        // Nyt stringify-muutos tapahtuu automaattisesti expressillä
 
-app.get('/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
+app.get('api/notes/:id', (request, response) => {    // käsittelee kaikki HTTP GET -pyynnöt, jotka ovat muotoa /api/notes/JOTAIN (ei sisälly api/notes) 
   const id = Number(request.params.id)
   const note = notes.find(note => note.id === id)
   if (note) {                 
