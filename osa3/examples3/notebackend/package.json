@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rd /s /q build && cd C:/Ossi/Yliopisto/TIE/Fullstackopen/osa2/examples2/moduulit && npm run build --prod && Xcopy //E //I C:/Ossi/Yliopisto/TIE/Fullstackopen/osa2/examples2/moduulit/build C:/Ossi/Yliopisto/TIE/Fullstackopen/osa3/examples3/notebackend/build",
+    "deploy": "git push heroku master",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
+    "logs:prod": "heroku logs --tail"
   },
   "repository": {
     "type": "git",
