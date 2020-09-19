@@ -43,7 +43,7 @@ const App = () => {
       if(replace_result){
         let id = 0
         for(let person of persons){
-          if(person.name == newName){
+          if(person.name === newName){
             id = person.id
           }
         }
