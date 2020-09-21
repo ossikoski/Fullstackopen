@@ -48,24 +48,24 @@ const App = () => {
           }
         }
         personService
-        .update(id, personObject)
-          .then(returnedPerson => {
-            console.log("UPDATE", returnedPerson)
-            setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
-            setNotificationMessage(
-              [false, `${newName} number changed to ${newNumber}`]
-            )
+          .update(id, personObject)
+            .then(returnedPerson => {
+              console.log("UPDATE", returnedPerson)
+              setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+              setNotificationMessage(
+                [false, `${newName} number changed to ${newNumber}`]
+              )
+              setTimeout(() => {
+                setNotificationMessage([false, null])
+              }, 5000)
+            })
+          .catch(error => {
+            setNotificationMessage([true, `${newName} has already been deleted from the server`])
+            setPersons(persons.filter(person => person.id !== id))
             setTimeout(() => {
               setNotificationMessage([false, null])
             }, 5000)
           })
-        .catch(error => {
-          setNotificationMessage([true, `${newName} has already been deleted from the server`])
-          setPersons(persons.filter(person => person.id !== id))
-          setTimeout(() => {
-            setNotificationMessage([false, null])
-          }, 5000)
-        })
         
       }
     }
@@ -77,14 +77,26 @@ const App = () => {
             setPersons(persons.concat(returnedPerson))
             setNewName('')
             setNewNumber('')
-        })
-      setNotificationMessage([
-        false, 
-        `Added ${newName}`
-      ])
-      setTimeout(() => {
-        setNotificationMessage([false, null])
-      }, 5000)
+            setNotificationMessage([
+              false, 
+              `Added ${newName}`
+            ])
+            setTimeout(() => {
+              setNotificationMessage([false, null])
+            }, 5000)
+          })
+          .catch(error => {
+            console.log(error.response.data)
+            //const errorMsg = 
+            setNotificationMessage([
+              true, 
+              error.response.data.error
+            ])
+            setTimeout(() => {
+              setNotificationMessage([false, null])
+            }, 5000)
+          })
+      
     }
   }
 
