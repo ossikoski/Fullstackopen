@@ -3,7 +3,7 @@ const baseUrl = '/api/persons'
 
 const getAll = () => {
   const request = axios.get(baseUrl)
-  console.log("request.body", request.body)
+  console.log('request.body', request.body)
   return request.then(response => response.data)
 }
 
@@ -22,4 +22,4 @@ const deleting = (id) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, create, update, deleting}
+export default { getAll, create, update, deleting }
