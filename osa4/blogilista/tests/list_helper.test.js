@@ -1,14 +1,6 @@
 const listHelper = require('../utils/list_helper')
 
-test('dummy returns one', () => {
-  const blogs = []
-
-  const result = listHelper.dummy(blogs)
-  expect(result).toBe(1)
-})
-
-describe('total likes', () => {
-  const listWithOneBlog = [
+const listWithOneBlog = [
     {
         _id: '5a422aa71b54a676234d17f8',
         title: 'Go To Statement Considered Harmful',
@@ -18,13 +10,8 @@ describe('total likes', () => {
         __v: 0
     }
   ]
-  
-  test('when list has only one blog equals the likes of that', () => {
-    const result = listHelper.totalLikes(listWithOneBlog)
-    expect(result).toBe(5)
-  })
 
-  const blogs = [ 
+const blogs = [ 
     { 
         _id: "5a422a851b54a676234d17f7", 
         title: "React patterns", 
@@ -73,7 +60,19 @@ describe('total likes', () => {
         likes: 2, 
         __v: 0 
     }
-  ]
+]
+
+test('dummy returns one', () => {
+    const result = listHelper.dummy([])
+    expect(result).toBe(1)
+})
+
+describe('total likes', () => {
+  
+  test('when list has only one blog equals the likes of that', () => {
+    const result = listHelper.totalLikes(listWithOneBlog)
+    expect(result).toBe(5)
+  })
   
   test('of a bigger list is calculated right', () => {
     const result = listHelper.totalLikes(blogs)
@@ -84,4 +83,25 @@ describe('total likes', () => {
     const result = listHelper.totalLikes([])
     expect(result).toBe(0)
   })
+})
+
+describe('favorite blog', () => {
+
+    test('when list has only one blog', () => {
+        const result = listHelper.favoriteBlog(listWithOneBlog)
+        expect(result).toEqual({
+            title: 'Go To Statement Considered Harmful',
+            author: 'Edsger W. Dijkstra',
+            likes: 5
+        })
+    })
+
+    test('of bigger list', () => {
+        const result = listHelper.favoriteBlog(blogs)
+        expect(result).toEqual({ 
+            title: "Canonical string reduction", 
+            author: "Edsger W. Dijkstra",
+            likes: 12, 
+        })
+    })
 })
