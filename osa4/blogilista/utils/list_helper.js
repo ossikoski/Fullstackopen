@@ -34,11 +34,10 @@ const mostBlogs = (allBlogs) => {
     }
     const authors = []
     for(let blog of allBlogs){
-        authorName = blog.author
-        if(authors.find(author => author.author === authorName) === undefined){
-            var authorObject = new Author(authorName, 1)
+        if(authors.find(author => author.author === blog.author) === undefined){
+            var authorObject = new Author(blog.author, 1)
         }else{
-            var authorObject = authors.find(x => x.author === authorName)
+            var authorObject = authors.find(x => x.author === blog.author)
             authorObject.blogs += 1
         }
         authors.push(authorObject)
@@ -52,13 +51,38 @@ const mostBlogs = (allBlogs) => {
         }
     }
     return mostAuthor
+}
 
-
+const mostLikes = (allBlogs) => {
+    function Author(author, likes){
+        this.author = author
+        this.likes = likes
+    }
+    const authors = []
+    for(let blog of allBlogs){
+        if(authors.find(author => author.author === blog.author) === undefined){
+            var authorObject = new Author(blog.author, blog.likes)
+        }else{
+            var authorObject = authors.find(x => x.author === blog.author)
+            authorObject.likes += blog.likes
+        }
+        authors.push(authorObject)
+    }
+    let most = 0
+    var mostAuthor = {}
+    for(var authorObject of authors){
+        if(authorObject.likes > most){
+            most = authorObject.likes
+            mostAuthor = {"author": authorObject.author, "likes": authorObject.likes}
+        }
+    }
+    return mostAuthor
 }
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
