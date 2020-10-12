@@ -5,6 +5,8 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
+jest.setTimeout(30000)
+
 const initialBlogs = [
   {
     title: 'HTML is easy',
@@ -23,7 +25,7 @@ beforeEach(async () => {
   await Promise.all(promiseArray)
 })
 
-test('blogs are returned as json #', async () => {
+test('blogs are returned as json', async () => {
     console.log('enter json test')
     await api
         .get('/api/blogs')
@@ -36,6 +38,15 @@ test('there is one blog', async () => {
     const response = await api.get('/api/blogs')
     console.log("respo", response.body)
     expect(response.body.length).toBe(initialBlogs.length)
+})
+
+test('identifier is named id', async () => {
+  console.log('enter id test')
+  const response = await api.get('/api/blogs')
+  console.log("respo", response.body)
+  console.log("id", response.body[0].id)
+  console.log("title", response.body[0].title)
+  expect(response.body[0].id).toBeDefined()
 })
 
 
