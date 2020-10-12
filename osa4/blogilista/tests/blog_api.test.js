@@ -52,13 +52,16 @@ test('identifier is named id', async () => {
 
 test('add blog', async () => {
   console.log('enter add blog test')
-  const newBlog = new Blog({
+  const newBlog = {
     title: 'step3',
     author: ';D',
     url: '.com',
-    likes: 0
-  })
-  newBlog.save()
+    likes: 3
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
 
   const response = await api.get('/api/blogs')
   console.log("respo", response.body)
@@ -71,7 +74,7 @@ test('empty likes equals zero', async () => {
   await api
     .post('/api/blogs')
     .send({
-      title: 'empty likes 2',
+      title: 'empty likes',
       author: ';D',
       url: '.com',
       likes: 0
@@ -81,7 +84,6 @@ test('empty likes equals zero', async () => {
   console.log("respo", response.body)
   expect(response.body[1].likes).toBe(0)
 })
-
 
 afterAll(() => {
   console.log('close mongoose connection')
