@@ -49,6 +49,21 @@ test('identifier is named id', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('add blog', async () => {
+  console.log('enter add blog test')
+  const newBlog = new Blog({
+    title: 'step3',
+    author: ';D',
+    url: '.com',
+    likes: 0
+  })
+  newBlog.save()
+
+  const response = await api.get('/api/blogs')
+  console.log("respo", response.body)
+  expect(response.body.length).toBe(initialBlogs.length + 1)
+})
+
 
 afterAll(() => {
   console.log('close mongoose connection')
