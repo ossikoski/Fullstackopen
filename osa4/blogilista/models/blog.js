@@ -11,6 +11,10 @@ blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
+
+    if(returnedObject.likes === undefined){
+      returnedObject.likes = 0
+    }
   }
 })
 
