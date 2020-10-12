@@ -4,6 +4,7 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const blogsRouter = require('../controllers/blogs')
 
 jest.setTimeout(30000)
 
@@ -66,12 +67,15 @@ test('add blog', async () => {
 
 test('empty likes equals zero', async () => {
   console.log('empty likes test')
-  const newBlog = new Blog({
-    title: 'empty likes',
-    author: ';D',
-    url: '.com'
-  })
-  newBlog.save()
+
+  await api
+    .post('/api/blogs')
+    .send({
+      title: 'empty likes 2',
+      author: ';D',
+      url: '.com',
+      likes: 0
+    })
 
   const response = await api.get('/api/blogs')
   console.log("respo", response.body)

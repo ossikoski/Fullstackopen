@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const logger = require('../utils/logger')
 
 const blogSchema = mongoose.Schema({
   title: String,
@@ -11,10 +12,6 @@ blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
-
-    if(returnedObject.likes === undefined){
-      returnedObject.likes = 0
-    }
   }
 })
 
