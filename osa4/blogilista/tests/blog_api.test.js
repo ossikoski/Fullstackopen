@@ -85,6 +85,18 @@ test('empty likes equals zero', async () => {
   expect(response.body[1].likes).toBe(0)
 })
 
+test('empty title and url result in bad request', async () => {
+  console.log('empty title and url test')
+
+  await api
+    .post('/api/blogs')
+    .send({
+      author: ';D',
+      likes: 100
+    })
+    .expect(400)
+})
+
 afterAll(() => {
   console.log('close mongoose connection')
   mongoose.connection.close()

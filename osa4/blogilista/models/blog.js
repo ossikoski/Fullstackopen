@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 const logger = require('../utils/logger')
 
 const blogSchema = mongoose.Schema({
-  title: String,
+  title: {type: String, required: true},
   author: String,
-  url: String,
+  url: {type: String, required: true},
   likes: Number
 })
 
