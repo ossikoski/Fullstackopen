@@ -97,6 +97,19 @@ test('empty title and url result in bad request', async () => {
     .expect(400)
 })
 
+test('delete blog', async () => {
+  console.log('delete blog test')
+  const response = await api.get('/api/blogs')
+  idToDelete = response.body[0].id
+
+  await api
+    .delete('/api/blogs/'+idToDelete)
+
+  const response2 = await api.get('/api/blogs')
+
+  expect(response2.body.length).toBe(initialBlogs.length - 1)
+})
+
 afterAll(() => {
   console.log('close mongoose connection')
   mongoose.connection.close()
