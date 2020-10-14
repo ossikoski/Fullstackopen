@@ -63,3 +63,8 @@ test('create user with taken username', async () => {
     const response = await api.get('/api/users')
     expect(response.body.length).toBe(1)
 })
+
+afterAll(() => {
+    console.log('close mongoose connection')
+    mongoose.connection.close()
+  })
