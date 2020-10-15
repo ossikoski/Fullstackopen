@@ -1,6 +1,7 @@
 POST http://localhost:3003/api/blogs 
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWY4NzE2NTRkZWY0NmIxYzUwOTY1OTJiIiwiaWF0IjoxNjAyNzU1NDM3fQ.4Ul4DxgpVYfRSJodxCukz2bRp7xI5j8RPXzrwQn6oXM
 
 {
-"url": ":DD", "title": "testi with user", "author": "OK", "likes": "1"
+  "url": "d:^)", "title": "testi with token", "author": "OK", "likes": "2"
 }
