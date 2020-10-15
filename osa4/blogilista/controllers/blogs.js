@@ -10,36 +10,22 @@ blogsRouter.get('/', async (request, response) => {
     
   response.json(blogs.map(blog => blog.toJSON()))
 })
-
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
   
-blogsRouter.post('/', async (request, response, next) => {
-  body = request.body
+blogsRouter.post('/', async (request, response) => {
+  console.log("POST", request.body)
 
-  const token = getTokenFrom(request)
-  console.log("TOKEN", token, typeof token, "TOKEN2", process.env.SECRET, typeof process.env.SECRET)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
   const user = await User.findById(decodedToken.id)
 
-  if(body.likes === undefined){
-    body.likes = 0
-  }
-
   const blog = new Blog({
-    url: body.url,
-    title: body.title,
-    author: body.author,
-    user: user._id,
-    likes: body.likes
+    url: request.body.url,
+    title: request.body.title,
+    author: request.body.author,
+    user: user.id,
+    likes: request.body.likes || 0
   })
 
   console.log("POST blog", blog)
@@ -53,7 +39,7 @@ blogsRouter.post('/', async (request, response, next) => {
     .catch(error => next(error))
   */
 
-  user.blogs = user.blogs.concat(savedBlog._id)
+  user.blogs = user.blogs.concat(savedBlog.id)
   await user.save()
 
   response.json(savedBlog.toJSON())

@@ -1,7 +1,7 @@
 POST http://localhost:3003/api/blogs 
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWY4NzE2NTRkZWY0NmIxYzUwOTY1OTJiIiwiaWF0IjoxNjAyNzU1NDM3fQ.4Ul4DxgpVYfRSJodxCukz2bRp7xI5j8RPXzrwQn6oXM
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNWY4NzE2NTRkZWY0NmIxYzUwOTY1OTJiIiwiaWF0IjoxNjAyNzc2ODE0fQ.Hj-ZPhLEUkQG1o6hCt6-2IT1zAty6gDrWQAUHL9e-DE
 
 {
-  "url": "d:^)", "title": "testi with token", "author": "OK", "likes": "2"
+  "url": ":{D", "title": "testi with token from middleware", "author": "OK", "likes": "4"
 }
