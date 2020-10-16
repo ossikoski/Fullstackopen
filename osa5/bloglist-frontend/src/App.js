@@ -18,11 +18,15 @@ const App = () => {
 
   //kirjautuneen käyttäjän lataus
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    console.log("Page reload -> effect hook to get localstorage item: ", window.localStorage.getItem('loggedBlogappUser'))
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       //blogService.setToken(user.token)
+    }
+    else{
+      console.log("No logged user found")
     }
   }, [])
 
@@ -34,6 +38,7 @@ const App = () => {
         username, password,
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      console.log("Local storage after it is set", window.localStorage.getItem('loggedBlogappUser'))
       setUser(user)
       setUsername('')
       setPassword('')
@@ -48,7 +53,7 @@ const App = () => {
 
   const handleLogout = async (event) => {
     console.log("Logout")
-    window.localStorage.removeItem('loggedBlogappUser')
+    await window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
 
@@ -77,9 +82,10 @@ const App = () => {
           <button type="submit">login</button>
         </form>
       </div>
+      
     )
   }
-
+  console.log(window.localStorage.getItem('loggedBlogappUser'))
   return (
     <div>
       <h2>blogs</h2>
