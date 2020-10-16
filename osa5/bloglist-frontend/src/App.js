@@ -16,6 +16,16 @@ const App = () => {
     )  
   }, [])
 
+  //kirjautuneen käyttäjän lataus
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      //blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     
@@ -23,6 +33,7 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
@@ -34,6 +45,13 @@ const App = () => {
     }
     */
   }
+
+  const handleLogout = async (event) => {
+    console.log("Logout")
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
   if (user === null) {
     return (
       <div>
@@ -66,6 +84,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       {user.name} logged in
+      <button onClick = {() => handleLogout()}>logout</button>
       <br></br>
       <br></br>
       {blogs.map(blog =>
