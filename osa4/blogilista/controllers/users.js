@@ -5,9 +5,12 @@ const Blog = require('../models/blog.js')
 
 usersRouter.post('/', async (request, response, next) => {
   const body = request.body
-
+  
+  if (body.username === undefined){
+    return response.status(400).json({error: 'username required'})
+  }
   if (body.password === undefined){
-    return response.status(400).json({error: 'invalid password'})
+    return response.status(400).json({error: 'password required'})
   }
   if (body.password.length < 3){
     return response.status(400).json({error: 'invalid password'})
@@ -24,7 +27,7 @@ usersRouter.post('/', async (request, response, next) => {
 
   console.log("POST user", user)
 
-  user
+  savedUser = await user
     .save()
     .then(result => {
         response.status(201).json(result)

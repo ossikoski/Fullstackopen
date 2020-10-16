@@ -13,6 +13,21 @@ beforeEach(async () => {
     await User.deleteMany({})
 })
 
+test('create user', async () => {
+    const newUser = {
+        username: 'testuser',
+        name: 'Test User',
+        password: 'salainen'
+    }
+
+    const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+    
+    console.log("Error message: ", result.body.error)
+})
+
 test('create user with no username', async () => {
     const newUser = {
         name: 'nousername',
@@ -39,29 +54,6 @@ test('create user with no password', async () => {
         .expect(400)
     
     console.log("Error message: ", result.body.error)
-})
-
-test('create user with taken username', async () => {
-    const newUser = {
-        username: 'takenusername',
-        name: 'Taken username',
-        password: 'salasana'
-    }
-
-    const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(201)
-
-    const result2 = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
-
-    console.log("Error message: ", result2.body.error)
-
-    const response = await api.get('/api/users')
-    expect(response.body.length).toBe(1)
 })
 
 afterAll(() => {

@@ -51,6 +51,42 @@ test('identifier is named id', async () => {
 
 test('add blog', async () => {
   console.log('enter add blog test')
+
+  const newUser = {
+    username: 'addblog',
+    name: 'Add Blog',
+    password: 'salainen'
+  }
+
+  const useResult = await api
+    .post('/api/users')
+    .send(newUser)
+  
+  const loginResult = await api
+    .post('/api/login')
+    .send(newUser)
+
+  token = loginResult.body.token
+
+  const newBlog = {
+    title: 'addblogtest',
+    author: ';D',
+    url: '.com',
+    likes: 3
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .set('Authorization', 'bearer ' + token)
+
+  const response = await api.get('/api/blogs')
+  console.log("respo", response.body)
+  expect(response.body.length).toBe(initialBlogs.length + 1)
+})
+
+test('add blog without token', async () => {
+  console.log('enter add blog without token test')
   const newBlog = {
     title: 'step3',
     author: ';D',
@@ -61,31 +97,48 @@ test('add blog', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
-
-  const response = await api.get('/api/blogs')
-  console.log("respo", response.body)
-  expect(response.body.length).toBe(initialBlogs.length + 1)
+    .expect(401)
 })
 
 test('empty likes equals zero', async () => {
   console.log('empty likes test')
 
+  const loginresult = await api
+    .post('/api/login')
+    .send({
+      username: 'addblog',
+      password: 'salainen'
+    })
+
+  token = loginresult.body.token
+
+  const newBlog = {
+    title: 'empty likes',
+    author: ';D',
+    url: '.com'
+  }
+
   await api
     .post('/api/blogs')
-    .send({
-      title: 'empty likes',
-      author: ';D',
-      url: '.com',
-      likes: 0
-    })
+    .send(newBlog)
+    .set('Authorization', 'bearer ' + token)
 
   const response = await api.get('/api/blogs')
   console.log("respo", response.body)
   expect(response.body[1].likes).toBe(0)
 })
 
-test('empty title and url result in bad request', async () => {
+test('empty title and url result in bad request (400)', async () => {
   console.log('empty title and url test')
+
+  const loginresult = await api
+    .post('/api/login')
+    .send({
+      username: 'addblog',
+      password: 'salainen'
+    })
+
+  token = loginresult.body.token
 
   await api
     .post('/api/blogs')
@@ -93,20 +146,45 @@ test('empty title and url result in bad request', async () => {
       author: ';D',
       likes: 100
     })
+    .set('Authorization', 'bearer ' + token)
     .expect(400)
 })
 
 test('delete blog', async () => {
   console.log('delete blog test')
-  const response = await api.get('/api/blogs')
-  idToDelete = response.body[0].id
+
+  const loginresult = await api
+    .post('/api/login')
+    .send({
+      username: 'addblog',
+      password: 'salainen'
+    })
+
+  token = loginresult.body.token
+
+  const newBlog = {
+    title: 'this blog will be deleted',
+    author: ';D',
+    url: '.com',
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .set('Authorization', 'bearer ' + token)
+
+  const getResponse = await api.get('/api/blogs')
+  expect(getResponse.body.length).toBe(initialBlogs.length+1)
+  idToDelete = getResponse.body[1].id
 
   await api
     .delete('/api/blogs/'+idToDelete)
+    .set('Authorization', 'bearer ' + token)
 
-  const response2 = await api.get('/api/blogs')
+  const getResponse2 = await api.get('/api/blogs')
 
-  expect(response2.body.length).toBe(initialBlogs.length - 1)
+  expect(getResponse2.body.length).toBe(initialBlogs.length)
 })
 
 afterAll(() => {
