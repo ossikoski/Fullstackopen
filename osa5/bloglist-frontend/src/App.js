@@ -13,10 +13,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
-
   const [notificationMessage, setNotificationMessage] = useState([false, null])
 
   const CreateFormRef = React.createRef()
@@ -71,32 +67,24 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-    console.log("Create new blog")
+  const handleCreate = (blogObject) => {
+    console.log("Create new blog, blogobject:", blogObject)
 
     CreateFormRef.current.toggleVisibility()
-
-    const blogObject = {
-      url: newUrl,
-      title: newTitle,
-      author: newAuthor
-    }
-    const msg = 'a new blog ' + newTitle + ' by ' + newAuthor + ' added'
+    
+    const msg = 'a new blog ' + blogObject.title + ' by ' + blogObject.author + ' added'
     setNotificationMessage([false, msg])
     setTimeout(() => {
       setNotificationMessage([false, null])
     }, 5000)
 
     blogService
-      .create(blogObject)
-      .then(returnedBlog => {
+    .create(blogObject)
+    .then(returnedBlog => {
+        console.log("Returned blog", returnedBlog)
         setBlogs(blogs.concat(returnedBlog))
-        setNewAuthor('')
-        setNewTitle('')
-        setNewUrl('')
-      })
-  }
+    })
+}
 
   if (user === null) {
     return (
@@ -119,8 +107,7 @@ const App = () => {
       <br></br>
       <h2>create new</h2>
       <Togglable buttonLabel='new blog' ref={CreateFormRef}>
-        <CreateForm handleCreate={handleCreate} newTitle={newTitle} setNewTitle={setNewTitle}
-          newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} />
+        <CreateForm create={handleCreate} />
       </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
