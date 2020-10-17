@@ -83,19 +83,25 @@ const App = () => {
         console.log("Returned blog", returnedBlog)
         setBlogs(blogs.concat(returnedBlog))
     })
-}
-  /*
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification message={notificationMessage}/>
-        <LoginForm handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}/>
-      </div>
-      
-    )
   }
-  */
+
+  const handleLike = ({blog}) => {
+    console.log("Like, blog:", blog)
+    const blogId = blog.id
+    const newObject = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+    blogService
+      .update(blogId, newObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
+      })
+  }
+  
   console.log(window.localStorage.getItem('loggedBlogappUser'))
   return (
     <div>
@@ -120,11 +126,10 @@ const App = () => {
       
       <br></br>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
     </div>
   )
 }
-
 
 export default App
