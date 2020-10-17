@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification.js'
+import LoginForm from './components/LoginForm.js'
+import CreateForm from './components/CreateForm.js'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -51,6 +53,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotificationMessage([false, null])
     } catch (exception) {
       setNotificationMessage([true, 'wrong username or password'])
       setTimeout(() => {
@@ -96,26 +99,7 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <Notification message={notificationMessage}/>
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-              <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-              />
-            <br></br>
-            password
-              <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-              />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <LoginForm handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}/>
       </div>
       
     )
@@ -130,34 +114,8 @@ const App = () => {
       <br></br>
       <br></br>
       <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          title:
-          <input
-          type="text"
-          value={newTitle}
-          name="NewTitle"
-          onChange={({ target }) => setNewTitle(target.value)}
-          />
-          <br></br>
-          author:
-          <input
-          type="text"
-          value={newAuthor}
-          name="NewAuthor"
-          onChange={({ target }) => setNewAuthor(target.value)}
-          />
-          <br></br>
-          url:
-          <input
-          type="text"
-          value={newUrl}
-          name="newUrl"
-          onChange={({ target }) => setNewUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
+      <CreateForm handleCreate={handleCreate} newTitle={newTitle} setNewTitle={setNewTitle}
+        newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
