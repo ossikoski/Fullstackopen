@@ -18,9 +18,10 @@ const App = () => {
   const CreateFormRef = React.createRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      blogs.sort(compareByLikes)
+      setBlogs(blogs)
+    })  
   }, [])
 
   //kirjautuneen käyttäjän lataus localstoragesta
@@ -36,6 +37,16 @@ const App = () => {
       console.log("No logged user found")
     }
   }, [])
+
+  const compareByLikes = (a, b) => {
+    if(a.likes < b.likes){
+      return 1
+    }
+    if(a.likes > b.likes){
+      return -1
+    }
+    return 0
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
