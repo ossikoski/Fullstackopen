@@ -9,6 +9,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       //console.log(blogs),
@@ -16,14 +20,14 @@ const App = () => {
     )  
   }, [])
 
-  //kirjautuneen käyttäjän lataus
+  //kirjautuneen käyttäjän lataus localstoragesta
   useEffect(() => {
     console.log("Page reload -> effect hook to get localstorage item: ", window.localStorage.getItem('loggedBlogappUser'))
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      //blogService.setToken(user.token)
+      blogService.setToken(user.token)
     }
     else{
       console.log("No logged user found")
@@ -39,6 +43,8 @@ const App = () => {
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       console.log("Local storage after it is set", window.localStorage.getItem('loggedBlogappUser'))
+      blogService.setToken(user.token)
+
       setUser(user)
       setUsername('')
       setPassword('')
@@ -55,6 +61,25 @@ const App = () => {
     console.log("Logout")
     await window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    console.log("Create new blog")
+
+    const blogObject = {
+      url: newUrl,
+      title: newTitle,
+      author: newAuthor
+    }
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewAuthor('')
+        setNewTitle('')
+        setNewUrl('')
+      })
   }
 
   if (user === null) {
@@ -93,6 +118,35 @@ const App = () => {
       <button onClick = {() => handleLogout()}>logout</button>
       <br></br>
       <br></br>
+      <h2>create new</h2>
+      <form onSubmit={handleCreate}>
+        <div>
+          title:
+          <input
+          type="text"
+          value={newTitle}
+          name="NewTitle"
+          onChange={({ target }) => setNewTitle(target.value)}
+          />
+          <br></br>
+          author:
+          <input
+          type="text"
+          value={newAuthor}
+          name="NewAuthor"
+          onChange={({ target }) => setNewAuthor(target.value)}
+          />
+          <br></br>
+          url:
+          <input
+          type="text"
+          value={newUrl}
+          name="newUrl"
+          onChange={({ target }) => setNewUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
