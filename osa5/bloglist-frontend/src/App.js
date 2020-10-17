@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import Notification from './components/Notification.js'
 import LoginForm from './components/LoginForm.js'
 import CreateForm from './components/CreateForm.js'
+import Togglable from './components/Togglable.js'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -16,11 +17,12 @@ const App = () => {
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
-  const [ notificationMessage, setNotificationMessage ] = useState([false, null])
+  const [notificationMessage, setNotificationMessage] = useState([false, null])
+
+  const CreateFormRef = React.createRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      //console.log(blogs),
       setBlogs( blogs )
     )  
   }, [])
@@ -73,6 +75,8 @@ const App = () => {
     event.preventDefault()
     console.log("Create new blog")
 
+    CreateFormRef.current.toggleVisibility()
+
     const blogObject = {
       url: newUrl,
       title: newTitle,
@@ -114,8 +118,10 @@ const App = () => {
       <br></br>
       <br></br>
       <h2>create new</h2>
-      <CreateForm handleCreate={handleCreate} newTitle={newTitle} setNewTitle={setNewTitle}
-        newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} />
+      <Togglable buttonLabel='new blog' ref={CreateFormRef}>
+        <CreateForm handleCreate={handleCreate} newTitle={newTitle} setNewTitle={setNewTitle}
+          newAuthor={newAuthor} setNewAuthor={setNewAuthor} newUrl={newUrl} setNewUrl={setNewUrl} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
