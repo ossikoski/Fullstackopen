@@ -112,6 +112,20 @@ const App = () => {
         setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
       })
   }
+
+  const handleDeleteBlog = ({blog}) => {
+    const result = window.confirm(`Remove blog ${blog.name} by ${blog.author}`)
+    if(result){
+      console.log("Delete blog: ", blog)
+      const blogId = blog.id
+      blogService
+        .deleting(blogId)
+        .then(() => {
+          console.log('deleted')
+          setBlogs(blogs.filter(blog => blog.id !== blogId))
+        })
+    }
+  }
   
   console.log(window.localStorage.getItem('loggedBlogappUser'))
   return (
@@ -137,7 +151,7 @@ const App = () => {
       
       <br></br>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={user}/>
       )}
     </div>
   )

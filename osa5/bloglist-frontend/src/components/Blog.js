@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
   const [infoVisible, setInfoVisible] = useState(false)
 
   const hideWhenInfoVisible = { display: infoVisible ? 'none' : '' }
   const showWhenInfoVisible = { display: infoVisible ? '' : 'none' }
 
+  if(user === null){
+    user = {
+      name: ''
+    }
+  }
   
   const toggleInfoVisibility = () => {
     setInfoVisible(!infoVisible)
@@ -36,6 +41,13 @@ const Blog = ({ blog, handleLike }) => {
         <button onClick={() => {handleLike({blog: blog})}}>like</button>
         <br></br>
         {blog.user.name}
+        {blog.user.name === user.name ?
+          <div>
+            <button onClick={() => {handleDeleteBlog({blog: blog})}}>remove</button>
+          </div>
+          :
+          <div></div>
+        }
       </div>
     </div>
 )}
