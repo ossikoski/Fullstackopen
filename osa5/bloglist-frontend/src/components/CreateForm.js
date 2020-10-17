@@ -25,6 +25,7 @@ const CreateForm = ({create}) => {
 
     return(
       <form onSubmit={handleCreate}>
+        <h2>create new</h2>
         <div>
             title:
             <input

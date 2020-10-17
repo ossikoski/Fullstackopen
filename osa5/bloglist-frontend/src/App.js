@@ -58,7 +58,6 @@ const App = () => {
         setNotificationMessage([false, null])
       }, 5000)
     }
-    
   }
 
   const handleLogout = async (event) => {
@@ -85,7 +84,7 @@ const App = () => {
         setBlogs(blogs.concat(returnedBlog))
     })
 }
-
+  /*
   if (user === null) {
     return (
       <div>
@@ -96,19 +95,30 @@ const App = () => {
       
     )
   }
+  */
   console.log(window.localStorage.getItem('loggedBlogappUser'))
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification message={notificationMessage}/>
-      {user.name} logged in
-      <button onClick = {() => handleLogout()}>logout</button>
+      {user === null ?
+        <div>
+          <h2>log in to application</h2>
+          <Notification message={notificationMessage}/>
+          <LoginForm handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}/> 
+        </div>
+        :
+        <div>
+          <h2>blogs</h2>
+          <Notification message={notificationMessage}/>
+          {user.name} logged in
+          <br></br>
+          <button onClick = {() => handleLogout()}>logout</button>
+          <Togglable buttonLabel='create new blog' ref={CreateFormRef}>
+            <CreateForm create={handleCreate} />
+          </Togglable>
+        </div>
+      }
+      
       <br></br>
-      <br></br>
-      <h2>create new</h2>
-      <Togglable buttonLabel='new blog' ref={CreateFormRef}>
-        <CreateForm create={handleCreate} />
-      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
