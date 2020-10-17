@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification.js'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,6 +13,8 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+
+  const [ notificationMessage, setNotificationMessage ] = useState([false, null])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,7 +40,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     
-    //try {
+    try {
       const user = await loginService.login({
         username, password,
       })
@@ -48,13 +51,13 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    /*} catch (exception) {
-      setErrorMessage('wrong credentials')
+    } catch (exception) {
+      setNotificationMessage([true, 'wrong username or password'])
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotificationMessage([false, null])
       }, 5000)
     }
-    */
+    
   }
 
   const handleLogout = async (event) => {
@@ -72,6 +75,12 @@ const App = () => {
       title: newTitle,
       author: newAuthor
     }
+    const msg = 'a new blog ' + newTitle + ' by ' + newAuthor + ' added'
+    setNotificationMessage([false, msg])
+    setTimeout(() => {
+      setNotificationMessage([false, null])
+    }, 5000)
+
     blogService
       .create(blogObject)
       .then(returnedBlog => {
@@ -86,6 +95,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={notificationMessage}/>
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -114,6 +124,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notificationMessage}/>
       {user.name} logged in
       <button onClick = {() => handleLogout()}>logout</button>
       <br></br>
