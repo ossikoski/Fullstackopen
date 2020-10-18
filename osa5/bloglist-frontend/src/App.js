@@ -98,6 +98,7 @@ const App = () => {
 
   const handleLike = ({blog}) => {
     console.log("Like, blog:", blog)
+    const blogUser = blog.user
     const blogId = blog.id
     const newObject = {
       user: blog.user.id,
@@ -109,7 +110,14 @@ const App = () => {
     blogService
       .update(blogId, newObject)
       .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== blogId ? blog : returnedBlog))
+        console.log("Returned blog before set: ", returnedBlog)
+        console.log("blogs0", blogs[0])
+        returnedBlog.user = blogUser
+        const mappedBlogs = blogs.map(blog => blog.id !== blogId ? blog : returnedBlog)
+        const sortedBlogs = mappedBlogs.sort(compareByLikes)
+        setBlogs(sortedBlogs)
+        console.log("Returned blog after set: ", returnedBlog)
+        console.log("BlogUser:", blogUser)
       })
   }
 
