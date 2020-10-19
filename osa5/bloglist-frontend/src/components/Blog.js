@@ -5,7 +5,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
 
   const hideWhenInfoVisible = { display: infoVisible ? 'none' : '' }
   const showWhenInfoVisible = { display: infoVisible ? '' : 'none' }
-  
+
   const toggleInfoVisibility = () => {
     setInfoVisible(!infoVisible)
   }
@@ -18,7 +18,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
     marginBottom: 5
   }
 
-  console.log("Blog render")
+  console.log('Blog render')
   return(
     <div style={blogStyle}>
       <div style={hideWhenInfoVisible}>
@@ -30,16 +30,16 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
         {blog.title} {blog.author}
         <button onClick={toggleInfoVisibility}>hide</button>
         <br></br>
-        {blog.url} 
+        {blog.url}
         <br></br>
         likes {blog.likes}
-        <button onClick={() => {handleLike({blog: blog})}}>like</button>
+        <button onClick={() => {handleLike({ blog: blog })}}>like</button>
         <br></br>
         {blog.user.name}
         {console.log(blog)}
         {blog.user.name === user.name?
           <div>
-            <button onClick={() => {handleDeleteBlog({blog: blog})}}>remove</button>
+            <button onClick={() => {handleDeleteBlog({ blog: blog })}}>remove</button>
           </div>
           :
           <div>
@@ -47,6 +47,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
         }
       </div>
     </div>
-)}
+  )
+}
 
 export default Blog
