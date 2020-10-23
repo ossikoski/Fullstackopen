@@ -1,44 +1,133 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
-test('renders title and author but doesnt render url and likes', () => {
-  const user = {
-    username: 'hellas',
-    name: 'Arto Hellas',
-    id: '5f871654def46b1c5096592b'
-  }
 
-  const blog = {
+//console.log("firstdiv", component.container)
+//console.log("infodiv", infoDiv.container)
+
+test('renders title and author but doesnt render url and likes', () => {
+    const user = {
+        username: 'hellas',
+        name: 'Arto Hellas',
+        id: '5f871654def46b1c5096592b'
+      }
+      
+      const blog = {
+        url: 'Testiblogin.url.com',
+        title: 'Testiblogin title',
+        author: 'Testiblogin author',
+        user: {
+          username: 'hellas',
+          name: 'Arto Hellas',
+          id: '5f871654def46b1c5096592b'
+        },
+        likes: 1
+      }
+      
+      const mockHandleLike = jest.fn()
+      
+      const component = render(
+        <Blog blog={blog} user={user} />
+      )
+      //console.log('component', component)
+      const firstDiv = component.container.querySelector('.noInfo')
+      const infoDiv = component.container.querySelector('.info')
+      
+  expect(component.container).toHaveTextContent(
+    'Testiblogin title'
+  )
+  expect(component.container).toHaveTextContent(
+    'Testiblogin author'
+  )
+  expect(firstDiv).not.toHaveTextContent(
+    'Testiblogin.url.com'
+  )
+  expect(firstDiv).not.toHaveTextContent(
+    'likes'
+  )
+  expect(firstDiv).not.toHaveStyle('display: none')
+})
+
+test('after clicking view, all info is rendered', () => {
+    const user = {
+        username: 'hellas',
+        name: 'Arto Hellas',
+        id: '5f871654def46b1c5096592b'
+      }
+      
+    const blog = {
     url: 'Testiblogin.url.com',
     title: 'Testiblogin title',
     author: 'Testiblogin author',
     user: {
-      username: 'hellas',
-      name: 'Arto Hellas',
-      id: '5f871654def46b1c5096592b'
+        username: 'hellas',
+        name: 'Arto Hellas',
+        id: '5f871654def46b1c5096592b'
     },
     likes: 1
-  }
+    }
+    
+    const mockHandleLike = jest.fn()
+    
+    const component = render(
+      <Blog blog={blog} user={user} />
+    )
+    //console.log('component', component)
+    const firstDiv = component.container.querySelector('.noInfo')
+    const infoDiv = component.container.querySelector('.info')
+      
+  const button = component.getByText('view')
+  fireEvent.click(button)
 
-  
-  const component = render(
-    <Blog blog={blog} user={user} />
-  )
-
-  const div = component.container.querySelector('.noInfo')
-
-  expect(div).toHaveTextContent(
+  expect(component.container).toHaveTextContent(
     'Testiblogin title'
   )
-  expect(div).toHaveTextContent(
+  expect(component.container).toHaveTextContent(
     'Testiblogin author'
   )
-  expect(div).not.toHaveTextContent(
+  expect(component.container).toHaveTextContent(
     'Testiblogin.url.com'
   )
-  expect(div).not.toHaveTextContent(
+  expect(component.container).toHaveTextContent(
     'likes'
   )
+  expect(component.container).not.toHaveStyle('display: none')
 })
+
+test('after clicking like twice, like function is called twice', () => {
+    const user = {
+        username: 'hellas',
+        name: 'Arto Hellas',
+        id: '5f871654def46b1c5096592b'
+      }
+      
+    const blog = {
+    url: 'Testiblogin.url.com',
+    title: 'Testiblogin title',
+    author: 'Testiblogin author',
+    user: {
+        username: 'hellas',
+        name: 'Arto Hellas',
+        id: '5f871654def46b1c5096592b'
+    },
+    likes: 1
+    }
+    
+    const mockHandleLike = jest.fn()
+    
+    const component = render(
+      <Blog blog={blog} user={user} handleLike={mockHandleLike}/>
+    )
+    //console.log('component', component)
+    const firstDiv = component.container.querySelector('.noInfo')
+    const infoDiv = component.container.querySelector('.info')
+
+  const likeButton = component.getByText('like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockHandleLike.mock.calls).toHaveLength(2)
+})
+
