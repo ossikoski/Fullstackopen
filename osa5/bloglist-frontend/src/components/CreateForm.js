@@ -28,6 +28,7 @@ const CreateForm = ({ create }) => {
       <div>
         title:
         <input
+          id='title'
           type="text"
           value={newTitle}
           name="NewTitle"
@@ -36,6 +37,7 @@ const CreateForm = ({ create }) => {
         <br></br>
         author:
         <input
+          id='author'
           type="text"
           value={newAuthor}
           name="NewAuthor"
@@ -44,6 +46,7 @@ const CreateForm = ({ create }) => {
         <br></br>
         url:
         <input
+          id='url'
           type="text"
           value={newUrl}
           name="newUrl"
