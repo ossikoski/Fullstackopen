@@ -28,8 +28,50 @@ describe('Blog app', function() {
       cy.get('#usernameInput').type('hellas')
       cy.get('#passwordInput').type('wrong')
       cy.get('#loginButton').click()
-      cy.get('.error').contains('wrong').should('have.css', 'color').and('eq', 'rgb(255, 0, 0)')
+      cy.get('.error')
+        .contains('wrong')
+        .should('have.css', 'color', 'rgb(255, 0, 0)')
     })
+  })
+
+  describe('when logged in', function(){
+    beforeEach(function() {
+      cy.login({ username: 'hellas', password: 'salainen' })
+    })
+
+    it('a new blog can be created', function(){
+      cy.contains('create new blog').click()
+      cy.get('#title').type('A new blog can be created')
+      cy.get('#author').type('Cypress')
+      cy.get('#url').type('.test')
+      cy.get('#createBlog').click()
+
+      cy.contains('A new blog can be created')
+    })
+
+    describe('when a blog exists', function(){
+      beforeEach(function() {
+        cy.createBlog({
+          url: '.commands.createBlog',
+          title: 'testblog create',
+          author: 'Cypress',
+          likes: 68
+        })
+      })
+
+      it('a blog can be liked', function(){
+        cy.contains('testblog create')
+        cy.get('#viewInfo').click()
+        cy.get('#likeBlog').click()
+        cy.contains('likes 69')
+      })
+      
+    })
+
+    
+    
+
+
   })
   
 })

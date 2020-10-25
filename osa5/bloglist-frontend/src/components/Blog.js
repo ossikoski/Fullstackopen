@@ -31,7 +31,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
     <div style={blogStyle}>
       <div style={hideWhenInfoVisible} className='noInfo'>
         {blog.title} {blog.author}
-        <button onClick={toggleInfoVisibility}>view</button>
+        <button id="viewInfo" onClick={toggleInfoVisibility}>view</button>
       </div>
 
       <div style={showWhenInfoVisible} className='info'>
@@ -41,7 +41,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
         {blog.url}
         <br></br>
         likes {blog.likes}
-        <button onClick={() => {handleLike({ blog: blog })}}>like</button>
+        <button id="likeBlog" onClick={() => {handleLike({ blog: blog })}}>like</button>
         <br></br>
         {blog.user.name}
         {console.log(blog)}
