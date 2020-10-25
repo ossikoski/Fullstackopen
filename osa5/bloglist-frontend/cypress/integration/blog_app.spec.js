@@ -28,7 +28,7 @@ describe('Blog app', function() {
       cy.get('#usernameInput').type('hellas')
       cy.get('#passwordInput').type('wrong')
       cy.get('#loginButton').click()
-      cy.get('.error').contains('wrong')
+      cy.get('.error').contains('wrong').should('have.css', 'color').and('eq', 'rgb(255, 0, 0)')
     })
   })
   
