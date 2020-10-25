@@ -4,6 +4,7 @@ const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 jest.setTimeout(30000)
 
@@ -187,7 +188,43 @@ test('delete blog', async () => {
   expect(getResponse2.body.length).toBe(initialBlogs.length)
 })
 
-afterAll(() => {
+afterAll(async () => {
+  console.log('afterAll delete blogs and users and leave hellas user and one blog in the test database')
+  await User.deleteMany({})
+  await Blog.deleteMany({})
+
+  const hellasUser = {
+    username: 'hellas',
+    name: 'Arto Hellas',
+    password: 'salainen'
+  }
+
+  const userResult = await api
+    .post('/api/users')
+    .send(hellasUser)
+
+  console.log("user left in the database: ", userResult.body)
+  
+  const loginResult = await api
+    .post('/api/login')
+    .send(hellasUser)
+
+  token = loginResult.body.token
+
+  const testDatabaseBlog = {
+    title: 'test database blog',
+    author: 'blog_api.test.js',
+    url: '.com',
+    likes: 68
+  }
+
+  const blogResult = await api
+    .post('/api/blogs')
+    .send(testDatabaseBlog)
+    .set('Authorization', 'bearer ' + token)
+
+  console.log("blog left in the database: ", blogResult.body)
+
   console.log('close mongoose connection')
   mongoose.connection.close()
 })

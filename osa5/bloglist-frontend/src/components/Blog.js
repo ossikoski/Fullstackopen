@@ -10,6 +10,13 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
     setInfoVisible(!infoVisible)
   }
 
+  // Kun ei-kirjautuneena, niin userille tyhjä kenttä name, jotta sen vertailu onnistuu delete-napin yhteydessä
+  if(user === null){
+    user = {
+      name: ''
+    }
+  }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,

@@ -25,7 +25,7 @@ test('create user', async () => {
         .send(newUser)
         .expect(201)
     
-    console.log("Error message: ", result.body.error)
+    console.log("Result body: ", result.body)
 })
 
 test('create user with no username', async () => {
@@ -56,7 +56,20 @@ test('create user with no password', async () => {
     console.log("Error message: ", result.body.error)
 })
 
-afterAll(() => {
+afterAll(async () => {
+    console.log('afterAll: Create hellas user to be left in the test database')
+    const hellasUser = {
+        username: 'hellas',
+        name: 'Arto Hellas',
+        password: 'salainen'
+    }
+
+    const result = await api
+        .post('/api/users')
+        .send(hellasUser)
+    
+    console.log("user left in the database: ", result.body)
+
     console.log('close mongoose connection')
     mongoose.connection.close()
   })
