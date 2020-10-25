@@ -60,18 +60,17 @@ describe('Blog app', function() {
       })
 
       it('a blog can be liked', function(){
-        cy.contains('testblog create')
         cy.get('#viewInfo').click()
         cy.get('#likeBlog').click()
         cy.contains('likes 69')
       })
-      
+
+      it('a blog can be deleted', function(){
+        cy.get('#viewInfo').click()
+        cy.get('#deleteBlog').click()
+        cy.get('html').should('not.contain', 'testblog create')
+      })
     })
-
-    
-    
-
-
   })
   
 })
