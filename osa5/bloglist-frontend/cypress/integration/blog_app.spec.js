@@ -70,7 +70,22 @@ describe('Blog app', function() {
         cy.get('#deleteBlog').click()
         cy.get('html').should('not.contain', 'testblog create')
       })
+
+      it('a blog cant be deleted by user who didnt add it', function(){
+        const user = {
+          name: 'Another user',
+          username: 'another',
+          password: 'salainen'
+        }
+        cy.request('POST', 'http://localhost:3001/api/users/', user)
+        cy.get('#logoutButton').click
+        cy.login({ username: 'another', password: 'salainen' })
+        cy.get('#viewInfo').click()
+        cy.get('html').should('not.contain', '#deleteBlog')
+        cy.contains('testblog create')
+      })
     })
   })
+
   
 })
