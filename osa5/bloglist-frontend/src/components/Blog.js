@@ -28,7 +28,7 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
   console.log('Blog render')
   console.log('user', user)
   return(
-    <div style={blogStyle}>
+    <div id="blog" style={blogStyle}>
       <div style={hideWhenInfoVisible} className='noInfo'>
         {blog.title} {blog.author}
         <button id="viewInfo" onClick={toggleInfoVisibility}>view</button>
@@ -36,12 +36,12 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
 
       <div style={showWhenInfoVisible} className='info'>
         {blog.title} {blog.author}
-        <button onClick={toggleInfoVisibility}>hide</button>
+        <button id="hideInfo" onClick={toggleInfoVisibility}>hide</button>
         <br></br>
         {blog.url}
         <br></br>
         likes {blog.likes}
-        <button id="likeBlog" onClick={() => {handleLike({ blog: blog })}}>like</button>
+        <button id="likeButton" onClick={() => {handleLike({ blog: blog })}}>like</button>
         <br></br>
         {blog.user.name}
         {console.log(blog)}
