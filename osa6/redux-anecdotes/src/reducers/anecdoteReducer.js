@@ -1,3 +1,5 @@
+import setNotification from './notificationReducer'
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -37,12 +39,14 @@ const anecdoteReducer = (state = initialState, action) => {
       return [...state, action.data]
     case 'VOTE':
       const anecdoteToVote = state.find(a => a.id === action.data.id)
+      console.log(state[0].id, '===', action.data.id)
+      console.log('anecdotetovote', anecdoteToVote)
       const votedAnecdote = {
         ...anecdoteToVote,
         votes: anecdoteToVote.votes + 1
       }
-      return state.map(a => a.id !== action.data.id ? a : votedAnecdote).sort(compareByVotes)
 
+      return state.map(a => a.id !== action.data.id ? a : votedAnecdote).sort(compareByVotes)
     default:
       return state
   }

@@ -1,16 +1,17 @@
-const notificationReducer = (state = 'notification alkuarvo', action) => {
-  switch (action.type) {
+const notificationReducer = (state = '', action) => {
+  console.log('action', action)
+  switch(action.type) {
     case 'SET_NOTIFICATION':
-      return action.notification
+      return action.data.notification
     default:
       return state
   }
 }
 
-export const notificationChange = (notification) => {
+export const setNotification = (notification) => {
   return {
     type: 'SET_NOTIFICATION',
-    notification
+    data: {notification}
   }
 }
 
