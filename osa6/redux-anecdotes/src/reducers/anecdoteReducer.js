@@ -19,6 +19,16 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
+const compareByVotes = (a, b) => {
+  if(a.votes < b.votes){
+    return 1
+  }
+  if(a.votes > b.votes){
+    return -1
+  }
+  return 0
+}
+
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
@@ -31,7 +41,7 @@ const reducer = (state = initialState, action) => {
         ...anecdoteToVote,
         votes: anecdoteToVote.votes + 1
       }
-      return state.map(a => a.id !== action.data.id ? a : votedAnecdote)
+      return state.map(a => a.id !== action.data.id ? a : votedAnecdote).sort(compareByVotes)
 
     default:
       return state
