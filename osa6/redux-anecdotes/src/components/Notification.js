@@ -13,8 +13,11 @@ const Notification = () => {
     return null
   }
   return (
-    <div style={style}>
-      {notification}
+    <div>
+      <div style={style}>
+        {notification}
+      </div>
+      <br></br>
     </div>
   )
 }
