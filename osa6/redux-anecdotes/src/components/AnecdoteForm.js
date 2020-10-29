@@ -1,5 +1,5 @@
 import React from 'react'
-import anecdoteReducer, { createAnecdote } from '../reducers/anecdoteReducer'
+import { createAnecdote } from '../reducers/anecdoteReducer'
 import { useDispatch } from 'react-redux'
 import anecdoteService from '../services/anecdotes'
 
