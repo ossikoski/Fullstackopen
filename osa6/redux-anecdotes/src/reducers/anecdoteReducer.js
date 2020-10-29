@@ -17,7 +17,7 @@ const anecdoteReducer = (state = [], action) => {
     case 'NEW':
       return [...state, action.data]
     case 'INIT':
-      return action.data
+      return action.data.sort(compareByVotes)
     case 'VOTE':
       const anecdoteToVote = state.find(a => a.id === action.data.id)
       console.log(state[0].id, '===', action.data.id)
