@@ -1,17 +1,15 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { connect } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import anecdotes from '../services/anecdotes'
 
 const AnecdoteList = (props) => {
-  const anecdotes = useSelector(state => state.anecdotes.filter(a => a.content.includes(state.filter)))
   const dispatch = useDispatch()
 
   return(
     <div>
-      {anecdotes.map(anecdote =>
+      {props.anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
@@ -33,8 +31,10 @@ const AnecdoteList = (props) => {
 }
 
 const mapStateToProps = (state) => {
+  console.log('state in mapstatetoprops', state)
   const filteredAnecdotes = state.anecdotes.filter(a => a.content.includes(state.filter))
-  return filteredAnecdotes
+  console.log('filteredAnecdotes', filteredAnecdotes)
+  return { anecdotes: filteredAnecdotes }
 }
 
 const mapDispatchToProps = {

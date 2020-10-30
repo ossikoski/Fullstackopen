@@ -1,10 +1,8 @@
 import React from 'react'
 import { filterChange } from '../reducers/filterReducer'
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 
 const Filter = (props) => {
-  const dispatch = useDispatch()
-
   const handleFilterChange = (event) => {
     console.log('event target value', event.target.value)
     event.preventDefault()
