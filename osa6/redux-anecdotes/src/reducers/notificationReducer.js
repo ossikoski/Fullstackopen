@@ -1,6 +1,3 @@
-import { combineReducers } from "redux"
-import { useSelector } from 'react-redux'
-
 const notificationReducer = (state = ['', null], action) => {
   console.log('notification action', action)
   switch(action.type) {
