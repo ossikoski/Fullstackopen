@@ -6,6 +6,7 @@ import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = (props) => {
   const dispatch = useDispatch()
+  console.log("anecdotelist props", props)
 
   return(
     <div>
@@ -19,7 +20,7 @@ const AnecdoteList = (props) => {
             <button 
               onClick={() => {
                 props.voteAnecdote(anecdote.id)
-                dispatch(setNotification(`you voted '${anecdote.content}'`, 10))
+                dispatch(setNotification(`you voted '${anecdote.content}'`, 10, props.oldTimeoutID))
               }}
             >vote</button>
           </div>
@@ -34,7 +35,10 @@ const mapStateToProps = (state) => {
   console.log('state in mapstatetoprops', state)
   const filteredAnecdotes = state.anecdotes.filter(a => a.content.includes(state.filter))
   console.log('filteredAnecdotes', filteredAnecdotes)
-  return { anecdotes: filteredAnecdotes }
+  return { 
+    anecdotes: filteredAnecdotes,  
+    oldTimeoutID: state.notification[1]
+  }
 }
 
 const mapDispatchToProps = {

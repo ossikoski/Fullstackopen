@@ -6,13 +6,15 @@ import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteForm = (props) => {
   const dispatch = useDispatch()
+
+  console.log('AnecdoteForm props', props)
   
   const addAnecdote = async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     props.createAnecdote(content)
-    dispatch(setNotification(`you added '${content}'`, 10))
+    dispatch(setNotification(`you added '${content}'`, 10, props.oldTimeoutID))
   }
   
   return(
@@ -26,7 +28,14 @@ const AnecdoteForm = (props) => {
   )
 }
 
+const mapStateToProps = (state) => {
+  console.log('ANECDOTEFORM state in mapstatetoprops', state)
+  return {
+    oldTimeoutID: state.notification[1]
+  }
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   { createAnecdote }
 )(AnecdoteForm)
