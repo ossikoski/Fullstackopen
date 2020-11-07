@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import {
   BrowserRouter as 
   Switch, Route,
+  Redirect,
+  useHistory,
   useRouteMatch
 } from "react-router-dom"
 
@@ -20,6 +22,7 @@ const Menu = () => {
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
+    {console.log('anecdotelist', anecdotes)}
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(anecdote => 
@@ -68,8 +71,10 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const history = useHistory()
 
   const handleSubmit = (e) => {
+    console.log("handlesubmit")
     e.preventDefault()
     props.addNew({
       content,
@@ -77,6 +82,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    history.push("/")
   }
 
   return (
@@ -101,6 +107,17 @@ const CreateNew = (props) => {
   )
 }
 
+const Notification = ({ notification }) => {
+  if(notification === ''){
+    return null
+  }
+  return(
+    <div>
+      {notification}
+    </div>
+  )
+}
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -120,6 +137,8 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  
+  let history = useHistory()
 
   const match = useRouteMatch('/anecdotes/:id')
   const anecdote = match 
@@ -128,7 +147,15 @@ const App = () => {
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
+    console.log('anecdote to add', anecdote)
     setAnecdotes(anecdotes.concat(anecdote))
+    console.log('Anecdotes after addNew: ', anecdotes)
+    const msg = `a new anecdote ${anecdote.content} created!`
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000)
+    console.log('Anecdotes after addNew: ', anecdotes)
   }
 
   const anecdoteById = (id) =>
@@ -145,10 +172,13 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
+  console.log('App anecdotes', anecdotes)
+
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification notification={notification}/>
 
       <Switch>
         <Route path="/anecdotes/:id">
@@ -158,7 +188,7 @@ const App = () => {
           <About />
         </Route>
         <Route path="/create">
-          <CreateNew addNew={addNew} />
+          <CreateNew addNew={addNew}/>
         </Route>
         <Route exact path="/">
           <AnecdoteList anecdotes={anecdotes} />
