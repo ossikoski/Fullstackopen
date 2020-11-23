@@ -10,7 +10,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initBlogs, createBlog } from './reducers/blogReducer'
+import { initBlogs, createBlog, likeBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -26,15 +26,6 @@ const App = () => {
   useEffect(() => {
     console.log('effect')
     dispatch(initBlogs())
-    /*
-    blogService
-      .getAll()
-      .then(blogs => {
-        console.log('App useEffect init blogs', blogs)
-        blogs.sort(compareByLikes)
-        dispatch(initBlogs(blogs))
-    })
-    */
   }, [])
 
   //kirjautuneen käyttäjän lataus localstoragesta
@@ -51,15 +42,7 @@ const App = () => {
     }
   }, [])
 
-  const compareByLikes = (a, b) => {
-    if(a.likes < b.likes){
-      return 1
-    }
-    if(a.likes > b.likes){
-      return -1
-    }
-    return 0
-  }
+  
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -109,6 +92,7 @@ const App = () => {
 
   const handleLike = ({ blog }) => {
     console.log('Like, blog: ', blog)
+    /*
     const blogUser = blog.user
     const blogId = blog.id
     const newObject = {
@@ -130,6 +114,9 @@ const App = () => {
         console.log('Returned blog after set: ', returnedBlog)
         console.log('BlogUser:', blogUser)
       })
+    */
+
+    dispatch(likeBlog(blog))
     
     dispatch(setNotification(`${blog.title} liked`))
     setTimeout(() => {
@@ -175,7 +162,7 @@ const App = () => {
       }
 
       <br></br>
-      {blogs ?  // KOska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
+      {blogs ?  // Koska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
         blogs.map(blog =>
           <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={user}/>
         )
