@@ -63,11 +63,14 @@ const App = () => {
       setUsername('')
       setPassword('')
 
-      dispatch(setNotification(''))
-    } catch (exception) {
-      dispatch(setNotification(''))
+      dispatch(setNotification([`user ${user.username} logged in`, false]))
       setTimeout(() => {
-        dispatch(setNotification(''))
+        dispatch(setNotification(['', false]))
+      }, 5000)
+    } catch (exception) {
+      dispatch(setNotification(['wrong username or password', true]))
+      setTimeout(() => {
+        dispatch(setNotification(['', false]))
       }, 5000)
     }
   }
@@ -77,6 +80,10 @@ const App = () => {
     await window.localStorage.removeItem('loggedBlogappUser')
     //setUser(null)
     dispatch(setLoggedInUser(null))
+    dispatch(setNotification([`user ${user.username} logged out`, false]))
+      setTimeout(() => {
+        dispatch(setNotification(['', false]))
+      }, 5000)
   }
 
   const handleCreate = (blogObject) => {
@@ -85,9 +92,9 @@ const App = () => {
 
     const msg = 'a new blog ' + blogObject.title + ' by ' + blogObject.author + ' added'
 
-    dispatch(setNotification(msg))
+    dispatch(setNotification([msg, false]))
     setTimeout(() => {
-      dispatch(setNotification(''))
+      dispatch(setNotification(['', false]))
     }, 5000)
 
     dispatch(createBlog(blogObject))
@@ -98,9 +105,9 @@ const App = () => {
 
     dispatch(likeBlog(blog))
     
-    dispatch(setNotification(`${blog.title} liked`))
+    dispatch(setNotification([`${blog.title} liked`, false]))
     setTimeout(() => {
-      dispatch(setNotification(''))
+      dispatch(setNotification(['', false]))
     }, 5000)
     
   }
@@ -110,6 +117,11 @@ const App = () => {
     if(result){
       console.log('Delete blog: ', blog)
       dispatch(deleteBlog(blog.id))
+
+      dispatch(setNotification([`${blog.title} removed`, false]))
+      setTimeout(() => {
+        dispatch(setNotification(['', false]))
+      }, 5000)
     }
   }
 
