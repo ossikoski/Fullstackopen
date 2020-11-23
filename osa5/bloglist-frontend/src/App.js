@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification.js'
@@ -10,11 +10,13 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
+import { initBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
+  console.log('App beginning blogs', blogs)
 
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -22,10 +24,17 @@ const App = () => {
   const CreateFormRef = React.createRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      blogs.sort(compareByLikes)
-      setBlogs(blogs)
+    console.log('effect')
+    dispatch(initBlogs())
+    /*
+    blogService
+      .getAll()
+      .then(blogs => {
+        console.log('App useEffect init blogs', blogs)
+        blogs.sort(compareByLikes)
+        dispatch(initBlogs(blogs))
     })
+    */
   }, [])
 
   //kirjautuneen käyttäjän lataus localstoragesta
@@ -94,7 +103,7 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         console.log('Returned blog', returnedBlog)
-        setBlogs(blogs.concat(returnedBlog))
+        dispatch(createBlog(returnedBlog))
       })
   }
 
@@ -117,7 +126,7 @@ const App = () => {
         returnedBlog.user = blogUser
         const mappedBlogs = blogs.map(blog => blog.id !== blogId ? blog : returnedBlog)
         const sortedBlogs = mappedBlogs.sort(compareByLikes)
-        setBlogs(sortedBlogs)
+        //setBlogs(sortedBlogs)
         console.log('Returned blog after set: ', returnedBlog)
         console.log('BlogUser:', blogUser)
       })
@@ -138,7 +147,7 @@ const App = () => {
         .deleting(blogId)
         .then(() => {
           console.log('deleted')
-          setBlogs(blogs.filter(blog => blog.id !== blogId))
+          //setBlogs(blogs.filter(blog => blog.id !== blogId))
         })
     }
   }
@@ -166,9 +175,13 @@ const App = () => {
       }
 
       <br></br>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={user}/>
-      )}
+      {blogs ?  // KOska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
+        blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={user}/>
+        )
+      :
+        <div></div>
+      }
     </div>
   )
 }
