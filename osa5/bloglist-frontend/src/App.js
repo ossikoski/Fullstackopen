@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route } from 'react-router-dom'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification.js'
@@ -14,11 +15,12 @@ import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setLoggedInUser } from './reducers/loggedInUserReducer'
+import { initUsers } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.loggedInUser)
+  const loggedInUser = useSelector(state => state.loggedInUser)
   console.log('App beginning blogs', blogs)
 
   const [username, setUsername] = useState('')
@@ -27,8 +29,9 @@ const App = () => {
   const CreateFormRef = React.createRef()
 
   useEffect(() => {
-    console.log('effect')
+    console.log('init effect')
     dispatch(initBlogs())
+    dispatch(initUsers())
   }, [])
 
   //kirjautuneen käyttäjän lataus localstoragesta
@@ -36,23 +39,21 @@ const App = () => {
     console.log('Page reload -> effect hook to get localstorage item: ', window.localStorage.getItem('loggedBlogappUser'))
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      console.log('Logged in user found', user)
-      dispatch(setLoggedInUser(user))
-      blogService.setToken(user.token)
+      const loggedInUser = JSON.parse(loggedUserJSON)
+      console.log('Logged in user found', loggedInUser)
+      dispatch(setLoggedInUser(loggedInUser))
+      blogService.setToken(loggedInUser.token)
     }
     else{
-      console.log('No logged user found')
+      console.log('No user logged in')
     }
   }, [])
-
-  
 
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username, password
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       console.log('Local storage after it is set', window.localStorage.getItem('loggedBlogappUser'))
@@ -78,7 +79,7 @@ const App = () => {
     console.log('Logout')
     await window.localStorage.removeItem('loggedBlogappUser')
     dispatch(setLoggedInUser(null))
-    dispatch(setNotification([`user ${user.username} logged out`, false]))
+    dispatch(setNotification([`user ${loggedInUser.username} logged out`, false]))
       setTimeout(() => {
         dispatch(setNotification(['', false]))
       }, 5000)
@@ -124,10 +125,10 @@ const App = () => {
   }
 
   console.log('loggedBlogappUser', window.localStorage.getItem('loggedBlogappUser'))
-  console.log('user before return', user)
+  console.log('user before return', loggedInUser)
   return (
     <div>
-      {user === null ?
+      {loggedInUser === null ?
         <div>
           <h2>log in to application</h2>
           <Notification/>
@@ -137,23 +138,35 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <Notification/>
-          {user.name} logged in
-          <br></br>
+          {loggedInUser.name} logged in
+          <br></br><br></br>
           <button id="logoutButton" onClick = {() => handleLogout()}>logout</button>
-          <Togglable buttonLabel='create new blog' ref={CreateFormRef}>
-            <CreateForm create={handleCreate} />
-          </Togglable>
+
+          <Switch>
+            <Route path="/users">
+              <Users/>
+            </Route>
+
+            <Route path="/">
+              <Togglable buttonLabel='create new blog' ref={CreateFormRef}>
+                <CreateForm create={handleCreate} />
+              </Togglable>
+
+              <br></br>
+              {blogs ?  // Koska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
+                blogs.map(blog =>
+                  <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={loggedInUser}/>
+                )
+              :
+                <div></div>
+              }
+            </Route>
+          </Switch>
+          
         </div>
       }
 
-      <br></br>
-      {blogs ?  // Koska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
-        blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={user}/>
-        )
-      :
-        <div></div>
-      }
+      
     </div>
   )
 }

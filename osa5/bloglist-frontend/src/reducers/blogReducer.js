@@ -16,7 +16,7 @@ const blogReducer = (state = null, action) => {
     }
 }
 
-export const initBlogs = (blogs) => {
+export const initBlogs = () => {
     return async dispatch => {
         const blogs = await blogService.getAll()
         console.log('initBlogs', blogs)
