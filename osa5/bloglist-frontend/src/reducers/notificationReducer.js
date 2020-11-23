@@ -1,12 +1,13 @@
 const notificationReducer = (state = ['', false], action) => {
-    console.log('action', action)
-    switch(action.type) {
-      case 'SET_NOTIFICATION':
-        return action.data
-      default:
-        return state
-    }
+  //Jos notificationin tilan toinen arvo on true, kyseessä on virheviesti.
+  console.log('action', action)
+  switch(action.type) {
+    case 'SET_NOTIFICATION':
+      return action.data
+    default:
+      return state
   }
+}
   
 export const setNotification = (notification) => {
     console.log('reducer setNotification', notification)

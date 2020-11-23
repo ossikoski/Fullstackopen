@@ -6,6 +6,8 @@ import Notification from './components/Notification.js'
 import LoginForm from './components/LoginForm.js'
 import CreateForm from './components/CreateForm.js'
 import Togglable from './components/Togglable.js'
+import Users from './components/Users.js'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -21,7 +23,6 @@ const App = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  //const [user, setUser] = useState(null)
 
   const CreateFormRef = React.createRef()
 
@@ -37,7 +38,6 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       console.log('Logged in user found', user)
-      //setUser(user)
       dispatch(setLoggedInUser(user))
       blogService.setToken(user.token)
     }
@@ -58,7 +58,6 @@ const App = () => {
       console.log('Local storage after it is set', window.localStorage.getItem('loggedBlogappUser'))
       blogService.setToken(user.token)
 
-      //setUser(user)
       dispatch(setLoggedInUser(user))
       setUsername('')
       setPassword('')
@@ -78,7 +77,6 @@ const App = () => {
   const handleLogout = async () => {
     console.log('Logout')
     await window.localStorage.removeItem('loggedBlogappUser')
-    //setUser(null)
     dispatch(setLoggedInUser(null))
     dispatch(setNotification([`user ${user.username} logged out`, false]))
       setTimeout(() => {

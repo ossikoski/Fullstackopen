@@ -3,13 +3,13 @@ import blogService from '../services/blogs'
 const blogReducer = (state = null, action) => {
     console.log('action', action)
     switch(action.type) {
-      case 'INIT':
+      case 'INIT_BLOGS':
         return action.data
-      case 'NEW':
+      case 'NEW_BLOG':
         return action.data
-      case 'LIKE':
+      case 'LIKE_BLOG':
         return action.data
-      case 'DEL':
+      case 'DEL_BLOG':
         return action.data
       default:
         return state
@@ -21,7 +21,7 @@ export const initBlogs = (blogs) => {
         const blogs = await blogService.getAll()
         console.log('initBlogs', blogs)
         dispatch({
-            type: 'INIT',
+            type: 'INIT_BLOGS',
             data: blogs
         })
     }
@@ -36,7 +36,7 @@ export const createBlog = (blogObject) => {
         const blogs = await blogService.getAll()
         console.log('createBlog', blogs)
         dispatch({
-            type: 'NEW',
+            type: 'NEW_BLOG',
             data: blogs
         })
     }
@@ -68,7 +68,7 @@ export const  likeBlog = (blog) => {
         const mappedBlogs = blogs.map(blog => blog.id !== newObject.id ? blog : likedBlog)
         const sortedBlogs = mappedBlogs.sort(compareByLikes)
         dispatch({
-            type: 'LIKE',
+            type: 'LIKE_BLOG',
             data: sortedBlogs
         })
     }
@@ -82,7 +82,7 @@ export const deleteBlog = (blogId) => {
         const filteredBlogs = blogs.filter(blog => blog.id !== blogId)
         console.log('filteredBlogs', filteredBlogs)
         dispatch({
-            type: 'DEL',
+            type: 'DEL_BLOG',
             data: filteredBlogs
         })
     }
