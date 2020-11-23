@@ -82,12 +82,16 @@ const App = () => {
       dispatch(setNotification(''))
     }, 5000)
 
+    dispatch(createBlog(blogObject))
+
+    /*
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         console.log('Returned blog', returnedBlog)
         dispatch(createBlog(returnedBlog))
       })
+    */
   }
 
   const handleLike = ({ blog }) => {

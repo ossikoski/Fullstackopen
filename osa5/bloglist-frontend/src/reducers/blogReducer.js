@@ -6,7 +6,7 @@ const blogReducer = (state = null, action) => {
       case 'INIT':
         return action.data
       case 'NEW':
-        return [...state, action.data]
+        return action.data
       case 'LIKE':
         return action.data
       case 'DEL':
@@ -27,12 +27,20 @@ export const initBlogs = (blogs) => {
     }
 }
 
-export const createBlog = (data) => {
+export const createBlog = (blogObject) => {
     // Ei tarvitse erikseen huolehtia järjestyksestä, koska uudella on 0 likeä joten se tulee aina ensin viimeiseksi.
-    return {
-        type: 'NEW',
-        data
+
+    return async dispatch => {
+        await blogService.create(blogObject)
+
+        const blogs = await blogService.getAll()
+        console.log('createBlog', blogs)
+        dispatch({
+            type: 'NEW',
+            data: blogs
+        })
     }
+    
 }
 
 export const  likeBlog = (blog) => {
@@ -69,6 +77,7 @@ export const  likeBlog = (blog) => {
 export const deleteBlog = (blogId) => {
     return async dispatch => {
         await blogService.deleting(blogId)
+
         const blogs = await blogService.getAll()
         const filteredBlogs = blogs.filter(blog => blog.id !== blogId)
         console.log('filteredBlogs', filteredBlogs)
