@@ -11,15 +11,17 @@ import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { setLoggedInUser } from './reducers/loggedInUserReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.loggedInUser)
   console.log('App beginning blogs', blogs)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  //const [user, setUser] = useState(null)
 
   const CreateFormRef = React.createRef()
 
@@ -34,7 +36,9 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      console.log('Logged in user found', user)
+      //setUser(user)
+      dispatch(setLoggedInUser(user))
       blogService.setToken(user.token)
     }
     else{
@@ -54,9 +58,11 @@ const App = () => {
       console.log('Local storage after it is set', window.localStorage.getItem('loggedBlogappUser'))
       blogService.setToken(user.token)
 
-      setUser(user)
+      //setUser(user)
+      dispatch(setLoggedInUser(user))
       setUsername('')
       setPassword('')
+
       dispatch(setNotification(''))
     } catch (exception) {
       dispatch(setNotification(''))
@@ -69,7 +75,8 @@ const App = () => {
   const handleLogout = async () => {
     console.log('Logout')
     await window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    //setUser(null)
+    dispatch(setLoggedInUser(null))
   }
 
   const handleCreate = (blogObject) => {
@@ -77,21 +84,13 @@ const App = () => {
     CreateFormRef.current.toggleVisibility()
 
     const msg = 'a new blog ' + blogObject.title + ' by ' + blogObject.author + ' added'
+
     dispatch(setNotification(msg))
     setTimeout(() => {
       dispatch(setNotification(''))
     }, 5000)
 
     dispatch(createBlog(blogObject))
-
-    /*
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        console.log('Returned blog', returnedBlog)
-        dispatch(createBlog(returnedBlog))
-      })
-    */
   }
 
   const handleLike = ({ blog }) => {
@@ -111,19 +110,11 @@ const App = () => {
     if(result){
       console.log('Delete blog: ', blog)
       dispatch(deleteBlog(blog.id))
-
-      /*
-      blogService
-        .deleting(blogId)
-        .then(() => {
-          console.log('deleted')
-          //setBlogs(blogs.filter(blog => blog.id !== blogId))
-        })
-      */
     }
   }
 
-  console.log(window.localStorage.getItem('loggedBlogappUser'))
+  console.log('loggedBlogappUser', window.localStorage.getItem('loggedBlogappUser'))
+  console.log('user before return', user)
   return (
     <div>
       {user === null ?
