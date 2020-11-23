@@ -10,7 +10,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initBlogs, createBlog, likeBlog } from './reducers/blogReducer'
+import { initBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -92,29 +92,6 @@ const App = () => {
 
   const handleLike = ({ blog }) => {
     console.log('Like, blog: ', blog)
-    /*
-    const blogUser = blog.user
-    const blogId = blog.id
-    const newObject = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
-    }
-    blogService
-      .update(blogId, newObject)
-      .then(returnedBlog => {
-        console.log('Returned blog before set: ', returnedBlog)
-        console.log('blogs0', blogs[0])
-        returnedBlog.user = blogUser
-        const mappedBlogs = blogs.map(blog => blog.id !== blogId ? blog : returnedBlog)
-        const sortedBlogs = mappedBlogs.sort(compareByLikes)
-        //setBlogs(sortedBlogs)
-        console.log('Returned blog after set: ', returnedBlog)
-        console.log('BlogUser:', blogUser)
-      })
-    */
 
     dispatch(likeBlog(blog))
     
@@ -129,13 +106,16 @@ const App = () => {
     const result = window.confirm(`Remove blog ${blog.name} by ${blog.author}`)
     if(result){
       console.log('Delete blog: ', blog)
-      const blogId = blog.id
+      dispatch(deleteBlog(blog.id))
+
+      /*
       blogService
         .deleting(blogId)
         .then(() => {
           console.log('deleted')
           //setBlogs(blogs.filter(blog => blog.id !== blogId))
         })
+      */
     }
   }
 

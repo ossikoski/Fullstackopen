@@ -9,6 +9,8 @@ const blogReducer = (state = null, action) => {
         return [...state, action.data]
       case 'LIKE':
         return action.data
+      case 'DEL':
+        return action.data
       default:
         return state
     }
@@ -64,19 +66,18 @@ export const  likeBlog = (blog) => {
     }
 }
 
-/*
-blogService
-      .update(blogId, newObject)
-      .then(returnedBlog => {
-        console.log('Returned blog before set: ', returnedBlog)
-        console.log('blogs0', blogs[0])
-        returnedBlog.user = blogUser
-        const mappedBlogs = blogs.map(blog => blog.id !== blogId ? blog : returnedBlog)
-        const sortedBlogs = mappedBlogs.sort(compareByLikes)
-        //setBlogs(sortedBlogs)
-        console.log('Returned blog after set: ', returnedBlog)
-        console.log('BlogUser:', blogUser)
-      })
-*/
+export const deleteBlog = (blogId) => {
+    return async dispatch => {
+        await blogService.deleting(blogId)
+        const blogs = await blogService.getAll()
+        const filteredBlogs = blogs.filter(blog => blog.id !== blogId)
+        console.log('filteredBlogs', filteredBlogs)
+        dispatch({
+            type: 'DEL',
+            data: filteredBlogs
+        })
+    }
+}
+
 
 export default blogReducer
