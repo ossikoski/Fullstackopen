@@ -65,15 +65,9 @@ const App = () => {
       setUsername('')
       setPassword('')
 
-      dispatch(setNotification([`user ${user.username} logged in`, false]))
-      setTimeout(() => {
-        dispatch(setNotification(['', false]))
-      }, 5000)
+      dispatch(setNotification([`user ${user.username} logged in`, false], 5))
     } catch (exception) {
-      dispatch(setNotification(['wrong username or password', true]))
-      setTimeout(() => {
-        dispatch(setNotification(['', false]))
-      }, 5000)
+      dispatch(setNotification(['wrong username or password', true], 5))
     }
   }
 
@@ -81,24 +75,19 @@ const App = () => {
     console.log('Logout')
     await window.localStorage.removeItem('loggedBlogappUser')
     dispatch(setLoggedInUser(null))
-    dispatch(setNotification([`user ${loggedInUser.username} logged out`, false]))
-      setTimeout(() => {
-        dispatch(setNotification(['', false]))
-      }, 5000)
+    dispatch(setNotification([`user ${loggedInUser.username} logged out`, false], 5))
   }
 
   const handleCreate = (blogObject) => {
     console.log('Create new blog, blogobject:', blogObject)
     CreateFormRef.current.toggleVisibility()
-
-    const msg = 'a new blog ' + blogObject.title + ' by ' + blogObject.author + ' added'
-
-    dispatch(setNotification([msg, false]))
-    setTimeout(() => {
-      dispatch(setNotification(['', false]))
-    }, 5000)
-
-    dispatch(createBlog(blogObject))
+    
+    if(blogObject.title === '' || blogObject.author === '' || blogObject.url === ''){
+      dispatch(setNotification([`Empty field, blog not added`, true], 5))
+    } else{
+      dispatch(setNotification([`a new blog ${blogObject.title} by ${blogObject.author} added`, false], 5))
+      dispatch(createBlog(blogObject))
+    }
   }
 
   const handleLike = ({ blog }) => {
@@ -106,10 +95,7 @@ const App = () => {
 
     dispatch(likeBlog(blog))
     
-    dispatch(setNotification([`${blog.title} liked`, false]))
-    setTimeout(() => {
-      dispatch(setNotification(['', false]))
-    }, 5000)
+    dispatch(setNotification([`${blog.title} liked`, false], 5))
     
   }
 
@@ -119,10 +105,7 @@ const App = () => {
       console.log('Delete blog: ', blog)
       dispatch(deleteBlog(blog.id))
 
-      dispatch(setNotification([`${blog.title} removed`, false]))
-      setTimeout(() => {
-        dispatch(setNotification(['', false]))
-      }, 5000)
+      dispatch(setNotification([`${blog.title} removed`, false], 5))
     }
   }
 
