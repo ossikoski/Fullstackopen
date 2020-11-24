@@ -1,5 +1,15 @@
 import blogService from '../services/blogs'
 
+const compareByLikes = (a, b) => {
+    if(a.likes < b.likes){
+      return 1
+    }
+    if(a.likes > b.likes){
+      return -1
+    }
+    return 0
+}
+
 const blogReducer = (state = null, action) => {
     console.log('action', action)
     switch(action.type) {
@@ -19,10 +29,11 @@ const blogReducer = (state = null, action) => {
 export const initBlogs = () => {
     return async dispatch => {
         const blogs = await blogService.getAll()
-        console.log('initBlogs', blogs)
+        const sortedBlogs = blogs.sort(compareByLikes)
+        console.log('initBlogs', sortedBlogs)
         dispatch({
             type: 'INIT_BLOGS',
-            data: blogs
+            data: sortedBlogs
         })
     }
 }
@@ -44,15 +55,7 @@ export const createBlog = (blogObject) => {
 }
 
 export const  likeBlog = (blog) => {
-    const compareByLikes = (a, b) => {
-        if(a.likes < b.likes){
-          return 1
-        }
-        if(a.likes > b.likes){
-          return -1
-        }
-        return 0
-    }
+    
 
     return async dispatch => {
         const newObject = {
