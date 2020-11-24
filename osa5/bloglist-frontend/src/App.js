@@ -8,6 +8,7 @@ import LoginForm from './components/LoginForm.js'
 import CreateForm from './components/CreateForm.js'
 import Togglable from './components/Togglable.js'
 import Users from './components/Users.js'
+import User from './components/User.js'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -19,9 +20,6 @@ import { initUsers } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
-  const loggedInUser = useSelector(state => state.loggedInUser)
-  console.log('App beginning blogs', blogs)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +30,7 @@ const App = () => {
     console.log('init effect')
     dispatch(initBlogs())
     dispatch(initUsers())
-  }, [])
+  }, [dispatch])
 
   //kirjautuneen käyttäjän lataus localstoragesta
   useEffect(() => {
@@ -48,6 +46,10 @@ const App = () => {
       console.log('No user logged in')
     }
   }, [])
+  
+  const blogs = useSelector(state => state.blogs)
+  const loggedInUser = useSelector(state => state.loggedInUser)
+  console.log('App beginning blogs', blogs)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -143,6 +145,10 @@ const App = () => {
           <button id="logoutButton" onClick = {() => handleLogout()}>logout</button>
 
           <Switch>
+            <Route path="/users/:id">
+              <User/>
+            </Route>
+
             <Route path="/users">
               <Users/>
             </Route>
@@ -153,7 +159,7 @@ const App = () => {
               </Togglable>
 
               <br></br>
-              {blogs ?  // Koska blogilista on myös Appissa, ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
+              {blogs ?  // Koska ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
                 blogs.map(blog =>
                   <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={loggedInUser}/>
                 )
