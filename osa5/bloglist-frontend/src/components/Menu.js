@@ -2,8 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Menu = ({ loggedInUser, handleLogout }) => {
-  const style = {
-  }
   return(
     <div className="menu">
         <Link to="/blogs">blogs</Link>

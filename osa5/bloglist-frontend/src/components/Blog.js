@@ -17,18 +17,10 @@ const Blog = ({ blog, handleLike, handleDeleteBlog, user }) => {
     }
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   console.log('Blog render')
   console.log('user', user)
   return(
-    <div id="blog" style={blogStyle}>
+    <div id="blog" className="blog">
       <div style={hideWhenInfoVisible} className='noInfo'>
         {blog.title} {blog.author}
         <button id="viewInfo" onClick={toggleInfoVisibility}>view</button>

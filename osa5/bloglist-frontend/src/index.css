@@ -22,3 +22,11 @@
   padding: 5px;
   background-color: lightgrey;
 }
+
+.blog{
+  padding-top: 10px;
+  padding-left: 2px;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 5px;
+}
