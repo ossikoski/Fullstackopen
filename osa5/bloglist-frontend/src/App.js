@@ -10,6 +10,7 @@ import CreateForm from './components/CreateForm.js'
 import Togglable from './components/Togglable.js'
 import Users from './components/Users.js'
 import User from './components/User.js'
+import Menu from './components/Menu.js'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -133,11 +134,9 @@ const App = () => {
         </div>
         :
         <div>
-          <h2>blogs</h2>
+          <Menu loggedInUser={loggedInUser} handleLogout={handleLogout}/>
+          <h2>blog app</h2>
           <Notification/>
-          {loggedInUser.name} logged in
-          <br></br><br></br>
-          <button id="logoutButton" onClick = {() => handleLogout()}>logout</button>
 
           <Switch>
             <Route path="/users/:id">
