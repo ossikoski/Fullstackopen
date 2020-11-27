@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 
-import Blog from './components/Blog'
+//import Blog from './components/Blog'
+import BlogPage from './components/BlogPage'
 import Notification from './components/Notification.js'
 import LoginForm from './components/LoginForm.js'
 import CreateForm from './components/CreateForm.js'
@@ -14,7 +15,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initBlogs, createBlog, likeBlog, deleteBlog } from './reducers/blogReducer'
+import { initBlogs, createBlog, likeBlog } from './reducers/blogReducer' //, deleteBlog
 import { setLoggedInUser } from './reducers/loggedInUserReducer'
 import { initUsers } from './reducers/userReducer'
 
@@ -45,7 +46,7 @@ const App = () => {
     else{
       console.log('No user logged in')
     }
-  }, [])
+  }, [dispatch])
   
   const blogs = useSelector(state => state.blogs)
   const loggedInUser = useSelector(state => state.loggedInUser)
@@ -100,6 +101,7 @@ const App = () => {
     
   }
 
+  /*
   const handleDeleteBlog = ({ blog }) => {
     const result = window.confirm(`Remove blog ${blog.name} by ${blog.author}`)
     if(result){
@@ -108,6 +110,15 @@ const App = () => {
 
       dispatch(setNotification(`${blog.title} removed`, false, notification[2], 5))
     }
+  }
+  */  
+  
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
   }
 
   console.log('loggedBlogappUser', window.localStorage.getItem('loggedBlogappUser'))
@@ -137,19 +148,28 @@ const App = () => {
               <Users/>
             </Route>
 
+            <Route path="/blogs/:id">
+              <BlogPage handleLike={handleLike} />
+            </Route>
+
             <Route path="/">
               <Togglable buttonLabel='create new blog' ref={CreateFormRef}>
                 <CreateForm create={handleCreate} />
               </Togglable>
-
-              <br></br>
               {blogs ?  // Koska ekalla renderöinnillä blogeja ei ole vielä saatu käyttöön.
                 blogs.map(blog =>
-                  <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={loggedInUser}/>
+                  // Vanha blogien näkymä:
+                  // <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={loggedInUser}/>
+                  <div id={blog.id} style={blogStyle}>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+                    <br></br>
+                  </div>
                 )
               :
                 <div></div>
               }
+
+              
             </Route>
           </Switch>
           
