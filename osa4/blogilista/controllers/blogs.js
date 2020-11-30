@@ -26,9 +26,9 @@ blogsRouter.post('/', async (request, response, next) => {
     url: request.body.url,
     title: request.body.title,
     author: request.body.author,
-    comments: [],
     user: user.id,
-    likes: request.body.likes || 0
+    likes: request.body.likes || 0,
+    comments: []
   })
 
   console.log("POST blog", blog)
@@ -84,14 +84,19 @@ blogsRouter.post('/:id/comments', async (request, response) => {
 
   const blog = await Blog.findById(id)
 
+  console.log('blog to comment:', blog)
+
   const commentedBlog = {
+    id: blog.id,
     url: blog.url,
     title: blog.title,
     author: blog.author,
-    comments: blog.comments.concat(request.body.comment),
-    user: blog.id,
-    likes: blog.likes
+    user: "5f871654def46b1c5096592b",
+    likes: blog.likes,
+    comments: blog.comments.concat(request.body.comment)
   }
+
+  console.log('commented blog', commentedBlog)
 
   const blogResponse = await Blog.findByIdAndUpdate(id, commentedBlog)
   response.json(blogResponse.toJSON())

@@ -1,6 +1,18 @@
-PUT http://localhost:3003/api/blogs/5f6e16c73cf9033e58296488
+PUT http://localhost:3001/api/blogs/5f8adc222b06c74f40c122b9
 Content-Type: application/json
 
 {
-"title": "test1", "author": "OK", "url": ":D", "likes": "2"
+    "title": "5.6", 
+    "author": "Frontend", 
+    "url": "=D", 
+    "likes": "68",
+    "comments": [
+        "Comment request",
+        "Comment request",
+        "Comment request one more year",
+        "Comment request one more year",
+        "Comment request one more year"
+    ],
+    "user": "5f871654def46b1c5096592b",
+    "id": "5f8adc222b06c74f40c122b9"
 }

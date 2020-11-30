@@ -21,6 +21,8 @@ const blogReducer = (state = null, action) => {
         return action.data
       case 'DEL_BLOG':
         return action.data
+      case 'COM_BLOG':
+        return [...state, ]
       default:
         return state
     }
@@ -55,8 +57,6 @@ export const createBlog = (blogObject) => {
 }
 
 export const  likeBlog = (blog) => {
-    
-
     return async dispatch => {
         const newObject = {
             user: blog.user.id,
@@ -91,5 +91,15 @@ export const deleteBlog = (blogId) => {
     }
 }
 
+export const commentBlog = (blogId, comment) => {
+    return async dispatch => {
+        await blogService.comment(blogId, comment)
+        const blogs = await blogService.getAll()
+        dispatch({
+            type: 'COM_BLOG',
+            data: blogs
+        })
+    }
+}
 
 export default blogReducer

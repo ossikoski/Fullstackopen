@@ -2,5 +2,5 @@ POST http://localhost:3001/api/blogs/5f8adc222b06c74f40c122b9/comments
 Content-Type: application/json
 
 {
-  "comment": "Comment request"
+  "comment": "Comment request one more year"
 }
