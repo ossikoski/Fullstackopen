@@ -159,7 +159,7 @@ const App = () => {
                 blogs.map(blog =>
                   // Vanha blogien näkymä:
                   // <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog} user={loggedInUser}/>
-                  <div id={blog.id} style={blogStyle}>
+                  <div key={blog.id} style={blogStyle}>
                     <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
                     <br></br>
                   </div>

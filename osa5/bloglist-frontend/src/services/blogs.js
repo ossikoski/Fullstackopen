@@ -36,7 +36,11 @@ const deleting = id => {
 }
 
 const comment = (id, comment) => {
-  const request = axios.post(`${baseUrl}/${id}/comments`, comment)
+  console.log('blogService comment', id, comment)
+  const requestComment = {
+    comment: comment
+  }
+  const request = axios.post(`${baseUrl}/${id}/comments`, requestComment)
   return request.then(response => response.data)
 }
 

@@ -84,14 +84,12 @@ blogsRouter.post('/:id/comments', async (request, response) => {
 
   const blog = await Blog.findById(id)
 
-  console.log('blog to comment:', blog)
-
   const commentedBlog = {
     id: blog.id,
     url: blog.url,
     title: blog.title,
     author: blog.author,
-    user: "5f871654def46b1c5096592b",
+    user: blog.user,
     likes: blog.likes,
     comments: blog.comments.concat(request.body.comment)
   }

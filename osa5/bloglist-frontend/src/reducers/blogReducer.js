@@ -22,7 +22,7 @@ const blogReducer = (state = null, action) => {
       case 'DEL_BLOG':
         return action.data
       case 'COM_BLOG':
-        return [...state, ]
+        return action.data
       default:
         return state
     }
@@ -92,12 +92,14 @@ export const deleteBlog = (blogId) => {
 }
 
 export const commentBlog = (blogId, comment) => {
+    console.log('blogReducer comment', blogId, comment)
     return async dispatch => {
         await blogService.comment(blogId, comment)
         const blogs = await blogService.getAll()
+        const sortedBlogs = blogs.sort(compareByLikes)
         dispatch({
             type: 'COM_BLOG',
-            data: blogs
+            data: sortedBlogs
         })
     }
 }
