@@ -114,7 +114,7 @@ const App = () => {
   console.log('loggedBlogappUser', window.localStorage.getItem('loggedBlogappUser'))
   console.log('user before return', loggedInUser)
   return (
-    <div class="container">
+    <div className="container">
       {loggedInUser === null ?
         <div>
           <h2>log in to application</h2>

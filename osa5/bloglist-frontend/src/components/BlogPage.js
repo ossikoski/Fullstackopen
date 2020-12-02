@@ -23,7 +23,7 @@ const BlogPage = ({ handleLike }) => {
     setComment('')
   }
 
-  console.log('Blog page render')
+  console.log('Blog page render, comments:', blog.comments)
   return(
     <div id="blog">
         <h2>{blog.title} {blog.author}</h2>
@@ -45,11 +45,10 @@ const BlogPage = ({ handleLike }) => {
           <button id="comment" type="submit">add comment</button>
         </form>
         <ul>
-            {blog.comments.map(comment =>
+            {blog.comments.map(comment => 
                 <li key={comment.id}>
                     {comment}
                 </li>
-            
             )}
         </ul>
         
