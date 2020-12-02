@@ -155,7 +155,7 @@ const App = () => {
                     </tr>
                   )
                   :
-                    <div></div>
+                    <tr></tr>
                   }
                 </tbody>
               </Table>
