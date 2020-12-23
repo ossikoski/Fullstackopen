@@ -96,7 +96,14 @@ const resolvers = {
           name: args.author
         }
         author = new Author(authorObject)
-        author.save()
+        try{
+          await author.save()
+        }
+        catch(error){
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
       else{
         console.log("Finding old author, countDocuments:", await Author.collection.countDocuments( {name: args.author }))
