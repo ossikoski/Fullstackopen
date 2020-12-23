@@ -77,6 +77,11 @@ const resolvers = {
     },
     allAuthors: () => Author.find({})
   },
+  Book: {
+    author: (root) => {
+      return Author.findById(root.author)
+    }
+  },
   Author: {
     bookCount: (root) => {
       return Book.collection.countDocuments({ author: root._id })
