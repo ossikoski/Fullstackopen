@@ -7,7 +7,8 @@ const author = require('./models/author.js')
 const { responsePathAsArray } = require('graphql')
 mongoose.set('useFindAndModify', false)
 mongoose.set('useCreateIndex', true)
-const MONGODB_URI = 'mongodb+srv://fullstack:jZTTEKf64sLtcZU@cluster0.zzinl.mongodb.net/library?retryWrites=true&w=majority'
+require('dotenv').config()
+const MONGODB_URI = process.env.MONGODB_URI
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -55,20 +56,24 @@ const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    allBooks: (root, args) => {
+    allBooks: async (root, args) => {
       console.log("allBooks resolver")
-      /*
       if(!args.author && !args.genre){
-        return books
+        return Book.find({})
       }
       if(!args.author && args.genre){
-        return books.filter(b => b.genres.includes(args.genre))
+        return Book.find({genres: { $in: args.genre }})
       }
       if(args.author && !args.genre){
-        return books.filter(b => b.author === args.author)
+        console.log("Author argument: doesn't work (8.14)")
+        return Book.find({ author: args.author })
       }
-      */
-      return Book.find({})
+      console.log("Both arguments: doesn't work (8.14)")
+      const bookResponse = await Book.find({ author: args.author }).lean()
+      const books = bookResponse.filter(b => b.genres.includes(args.genre))
+      console.log("bookResponse", bookResponse)
+      console.log("books", books)
+      return books
     },
     allAuthors: () => Author.find({})
   },
@@ -112,16 +117,22 @@ const resolvers = {
       }
       return book
     },
-    editAuthor: (root, args) => {
+    editAuthor: async (root, args) => {
+      const authors = await Author.find({}).lean()
+      console.log(authors)
       if(!authors.some(a => a.name === args.name)){
+        console.log("Given author doesn't exist")
         return null
       }
-      authors.map(a =>{
-        if(a.name === args.name){
-          a.born = args.setBornTo
-        }
-      })
-      return authors.find(a => args.name === a.name)
+      const author = authors.find(a => a.name === args.name)
+      const authorId = author._id
+      const editedAuthor = {
+        id: author._id,
+        name: author.name,
+        born: args.setBornTo
+      }
+      const authorResponse = await Author.findByIdAndUpdate(authorId, editedAuthor)
+      return authorResponse
     }
   }
 }
