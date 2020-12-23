@@ -111,7 +111,14 @@ const resolvers = {
     } 
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      const currentUser = context.currentUser
+      console.log(currentUser)
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated")
+      }
+
       var author
       if( await Author.collection.countDocuments( {name: args.author }) === 0 ){
         console.log("No author found, creating new (countDocuments == 0)")
@@ -152,7 +159,13 @@ const resolvers = {
       }
       return book
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated")
+      }
+
       const authors = await Author.find({}).lean()
       console.log(authors)
       if(!authors.some(a => a.name === args.name)){
