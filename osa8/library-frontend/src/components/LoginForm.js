@@ -15,7 +15,7 @@ const LoginForm = ({ setToken, setPage }) => {
       setToken(token)
       localStorage.setItem('library-user-token', token)
     }
-  }, [result.data])
+  }, [result.data]) // eslint-disable-line
 
   const submit = async (event) => {
     event.preventDefault()

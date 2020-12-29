@@ -53,8 +53,8 @@ const typeDefs = gql`
   type Mutation {
     addBook(
       title: String!
-      author: String!
       published: Int!
+      author: String!
       genres: [String!]!
     ): Book
     editAuthor(
@@ -95,7 +95,10 @@ const resolvers = {
       console.log("books", books)
       return books
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => {
+      console.log('allAuthors resolver')
+      return Author.find({})
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
@@ -112,8 +115,9 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args, context) => {
+      await console.log('addBook mutation before context')
       const currentUser = context.currentUser
-      console.log(currentUser)
+      console.log('addBook mutation current user', currentUser)
 
       if (!currentUser) {
         throw new AuthenticationError("not authenticated")
@@ -144,8 +148,8 @@ const resolvers = {
 
       const book = new Book({
         title: args.title,
-        author: author,
         published: args.published,
+        author: author,
         genres: args.genres
       })
       
@@ -193,6 +197,7 @@ const resolvers = {
         })
     },
     login: async (root, args) => {
+      console.log('login resolver')
       const user = await User.findOne({ username: args.username })
 
       if ( !user || args.password !== 'secret') {
