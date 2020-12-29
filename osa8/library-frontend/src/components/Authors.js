@@ -60,7 +60,7 @@ const Authors = (props) => {
       <form onSubmit={onSubmit}>
         <select onChange={({ target } ) => setName(target.value)}>
           {authors.map(a => 
-            <option value={a.name}>{a.name}</option>
+            <option key={a.id} value={a.name}>{a.name}</option>
           )}
         </select>
         <div>
