@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client'
 
 import { LOGIN } from '../queries'
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = ({ setToken, setPage }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -22,6 +22,7 @@ const LoginForm = ({ setToken }) => {
     login({
       variables: { username, password }
     })
+    setPage('authors')
 
   }
 
